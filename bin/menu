@@ -13,14 +13,15 @@ pick() {
 }
 
 capture() {
-    local options=("Screenshot region" "Screenshot monitor" "Record region" "Record monitor")
+    local options=("Screenshot region" "Screenshot monitor" "Screenshot window" "Record region" "Record monitor")
     # screenrecord stops a running recording whatever mode it's given
     if [ -f "$XDG_RUNTIME_DIR/screenrecord.file" ]; then
-        options=("Stop recording" "${options[@]:0:2}")
+        options=("Stop recording" "${options[@]:0:3}")
     fi
     case $(pick "" "${options[@]}") in
         "Screenshot region")  exec "$bin/screenshot" region ;;
         "Screenshot monitor") exec "$bin/screenshot" output ;;
+        "Screenshot window")  exec "$bin/screenshot" window ;;
         "Record region")      exec "$bin/screenrecord" region ;;
         "Record monitor")     exec "$bin/screenrecord" output ;;
         "Stop recording")     exec "$bin/screenrecord" ;;

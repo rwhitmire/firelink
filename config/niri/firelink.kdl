@@ -587,13 +587,13 @@ binds {
     // Mod+Space       { switch-layout "next"; }
     // Mod+Shift+Space { switch-layout "prev"; }
 
-    Print { screenshot; }
-    Ctrl+Print { screenshot-screen; }
-    Alt+Print { screenshot-window; }
+    // Every screenshot opens in Satty to annotate, instead of niri's own UI,
+    // so there's one tool and one way to save (Firelink's bin/screenshot).
+    Print hotkey-overlay-title="Screenshot Region" { spawn-sh "~/.local/share/firelink/bin/screenshot region"; }
+    Ctrl+Print hotkey-overlay-title="Screenshot Monitor" { spawn-sh "~/.local/share/firelink/bin/screenshot output"; }
+    Alt+Print hotkey-overlay-title="Screenshot Window" { spawn-sh "~/.local/share/firelink/bin/screenshot window"; }
 
-    // Annotate with Satty and record video (Firelink's bin/screenshot and bin/screenrecord).
-    Mod+Print hotkey-overlay-title="Screenshot Region and Annotate" { spawn-sh "~/.local/share/firelink/bin/screenshot region"; }
-    Mod+Ctrl+Print hotkey-overlay-title="Screenshot Monitor and Annotate" { spawn-sh "~/.local/share/firelink/bin/screenshot output"; }
+    // Record video with Firelink's bin/screenrecord.
     Shift+Print hotkey-overlay-title="Record Region (Toggle)" { spawn-sh "~/.local/share/firelink/bin/screenrecord region"; }
     Ctrl+Shift+Print hotkey-overlay-title="Record Monitor (Toggle)" { spawn-sh "~/.local/share/firelink/bin/screenrecord output"; }
 

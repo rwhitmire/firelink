@@ -1,8 +1,11 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Capture a screenshot and open it in Satty for annotation.
-# Usage: screenshot [region|output]
+# Opened by Print (region), Ctrl+Print (monitor), Alt+Print (window) and the
+# Firelink menu.
+# Usage: screenshot [region|output|window]
 #   region  select an area with slurp (default)
 #   output  capture the focused monitor
+#   window  capture the focused window
 # In Satty: Enter copies to the clipboard and saves to ~/Pictures/Screenshots.
 
 set -euo pipefail
@@ -21,8 +24,24 @@ case "$mode" in
     output=$(niri msg -j focused-output | jq -r .name)
     capture=(grim -o "$output" -)
     ;;
+  window)
+    # Only niri knows where a window is (and can capture it when covered).
+    # It writes the file after the command returns, so wait until it's whole.
+    tmp=$(mktemp -u "${XDG_RUNTIME_DIR:-/tmp}/screenshot-XXXXXX.png")
+    trap 'rm -f "$tmp"' EXIT
+    niri msg action screenshot-window --path "$tmp"
+    size=-1
+    for _ in $(seq 50); do
+      sleep 0.05
+      new=$(stat -c %s "$tmp" 2>/dev/null) || continue
+      [ "$new" -gt 0 ] && [ "$new" = "$size" ] && break
+      size=$new
+    done
+    [ -s "$tmp" ] || exit 1
+    capture=(cat "$tmp")
+    ;;
   *)
-    echo "usage: screenshot [region|output]" >&2
+    echo "usage: screenshot [region|output|window]" >&2
     exit 1
     ;;
 esac
