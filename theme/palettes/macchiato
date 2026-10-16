@@ -29,7 +29,7 @@ crust=181926
 # Non-color settings
 name=Macchiato
 color_scheme=prefer-dark
-wallpaper=moon-beach.png
+wallpaper=serenity.jpg
 
 # Terminal black/white slots (Latte swaps them so text stays readable on a light background)
 ansi_black=494d64
