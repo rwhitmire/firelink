@@ -1,34 +1,132 @@
 #!/usr/bin/env bash
-# Bluetooth menu (fuzzel). Opened by clicking the bluetooth icon in waybar.
-# Toggles the adapter and connects/disconnects paired devices. Pairing a new
-# device goes through GNOME Settings, which handles PIN prompts.
+# Bluetooth menu (fuzzel). Opened by clicking the bluetooth icon in waybar or
+# from the Firelink menu. Toggles the adapter, connects/disconnects paired
+# devices, and pairs new ones, asking in fuzzel when a device shows or wants a
+# code.
 
-if bluetoothctl show | grep -q 'Powered: yes'; then
+menu() { fuzzel --dmenu --with-nth 1 --prompt "  " --width 32 "$@"; }
+notify() { notify-send -a bluetooth -t "$1" "$2" "$3"; }
+
+# pair MAC NAME: pair, trust and connect. bluetoothctl is the pairing agent; its
+# prompts ("Confirm passkey 123456 (yes/no):") don't end in a newline, so its
+# output is read a character at a time and checked at each ": " too.
+pair() {
+    local mac=$1 name=$2 buf= c text code answer result= shown=
+    coproc bt { bluetoothctl --agent KeyboardDisplay 2>&1; }
+    echo "pair $mac" >&"${bt[1]}"
+    while IFS= read -r -N1 -t 60 c <&"${bt[0]}"; do
+        if [ "$c" = $'\n' ]; then
+            text=$(sed 's/\x1b\[[0-9;]*[A-Za-z]//g; s/\r//g' <<<"$buf")$'\n'
+            buf=
+        else
+            buf+=$c
+            [[ "$buf" == *": " ]] || continue
+            text=$(sed 's/\x1b\[[0-9;]*[A-Za-z]//g; s/\r//g' <<<"$buf")
+        fi
+        case $text in
+            *"Confirm passkey "*"(yes/no):"*)
+                buf=
+                # Both sides show a number: pair only if they match
+                code=$(grep -o '[0-9]\{6\}' <<<"$text" | tail -1)
+                answer=$(printf 'Yes, it matches\nNo\n' | menu --lines 2 --width 40 --prompt "  Does $name show $code?  ")
+                if [ "$answer" = "Yes, it matches" ]; then echo yes; else echo no; fi >&"${bt[1]}"
+                ;;
+            *"Accept pairing (yes/no):"*|*"Authorize service "*"(yes/no):"*)
+                buf=
+                echo yes >&"${bt[1]}"   # this pairing was asked for in the menu
+                ;;
+            *"Enter PIN code:"*|*"Enter passkey "*"):"*)
+                buf=
+                # Older devices print their code in their manual (often 0000)
+                answer=$(fuzzel --dmenu --prompt-only "  PIN for $name  " --width 36 </dev/null)
+                echo "$answer" >&"${bt[1]}"
+                ;;
+            *"Passkey: "[0-9]*$'\n'|*"PIN code: "[0-9]*$'\n')
+                # Keyboards: the code is typed on the device
+                if [ -z "$shown" ]; then
+                    code=$(grep -o '[0-9]\{4,6\}' <<<"$text" | tail -1)
+                    notify 30000 "Type $code on $name" "then press Enter on it."
+                    shown=1
+                fi
+                ;;
+            *"Pairing successful"*)
+                printf 'trust %s\nconnect %s\n' "$mac" "$mac" >&"${bt[1]}"
+                result=paired
+                ;;
+            *"Connection successful"*) result=connected; break ;;
+            *"Failed to connect"*) break ;;
+            *"Failed to pair"*|*"Device $mac not available"*) result=failed; break ;;
+        esac
+    done
+    { echo quit >&"${bt[1]}"; } 2>/dev/null
+    wait "$bt_PID" 2>/dev/null
+    case $result in
+        connected) notify 3000 "Connected" "$name" ;;
+        paired)    notify 5000 "Paired" "$name (it'll connect when it's ready)" ;;
+        failed)    notify 6000 "Couldn't pair" "$name. Put it in pairing mode and try again." ;;
+        *)         notify 6000 "Pairing timed out" "$name" ;;
+    esac
+}
+
+# Scan for a while, then list the devices found that aren't paired yet
+pair_new() {
+    notify 10000 "Looking for devices…" "Put the device in pairing mode."
+    bluetoothctl --timeout 10 scan on >/dev/null
+    local paired devices choice
+    paired=$(bluetoothctl devices Paired | awk '{ print $2 }')
+    # "Device AA:BB:.. Name" -> "Name\tAA:BB:..", leaving out paired devices and
+    # ones that don't send a name (shown as their address)
+    devices=$(bluetoothctl devices | while read -r _ mac name; do
+        grep -qx "$mac" <<<"$paired" && continue
+        [ "$name" = "${mac//:/-}" ] && continue
+        printf '%s\t%s\n' "$name" "$mac"
+    done)
+    choice=$(printf '%s\n' ${devices:+"$devices"} "Scan again" | menu) || exit 0
+    case "$choice" in
+        "Scan again") pair_new ;;
+        *) pair "${choice##*$'\t'}" "${choice%%$'\t'*}" ;;
+    esac
+}
+
+# Without an adapter (or bluetoothd), bluetoothctl waits forever
+adapter=$(timeout 2 bluetoothctl show 2>/dev/null)
+if ! grep -q '^Controller ' <<<"$adapter"; then
+    notify 4000 "No Bluetooth adapter" ""
+    exit 0
+fi
+
+if grep -q 'Powered: yes' <<<"$adapter"; then
     power="Turn Bluetooth off"
     # "Device AA:BB:.. Name" -> "● Name\tAA:BB:.." (● = connected)
     devices=$(bluetoothctl devices Paired | while read -r _ mac name; do
         if bluetoothctl info "$mac" | grep -q 'Connected: yes'; then mark="●"; else mark="○"; fi
         printf '%s %s\t%s\n' "$mark" "$name" "$mac"
     done)
+    options=(${devices:+"$devices"} "Pair a new device…" "$power")
 else
-    power="Turn Bluetooth on"
-    devices=
+    options=("Turn Bluetooth on")
 fi
 
-choice=$(printf '%s\n' ${devices:+"$devices"} "$power" "Pair a new device…" |
-    fuzzel --dmenu --with-nth 1 --prompt "  " --width 32) || exit 0
+choice=$(printf '%s\n' "${options[@]}" | menu) || exit 0
 
 case "$choice" in
     "Turn Bluetooth off") bluetoothctl power off ;;
     "Turn Bluetooth on")  bluetoothctl power on ;;
-    "Pair a new device…") XDG_CURRENT_DESKTOP=GNOME gnome-control-center bluetooth ;;
-    "● "*) bluetoothctl disconnect "${choice##*$'\t'}" ;;
+    "Pair a new device…") pair_new ;;
+    "● "*)
+        mac=${choice##*$'\t'}
+        name=${choice%%$'\t'*}
+        case $(printf '%s\n' Disconnect Forget | menu --lines 2 --prompt "  ${name#● }  ") in
+            Disconnect) bluetoothctl disconnect "$mac" ;;
+            Forget)     bluetoothctl remove "$mac" ;;
+        esac
+        ;;
     "○ "*)
         name=${choice%%$'\t'*}
         if bluetoothctl connect "${choice##*$'\t'}"; then
-            notify-send -a bluetooth -t 3000 "Connected" "${name#○ }"
+            notify 3000 "Connected" "${name#○ }"
         else
-            notify-send -a bluetooth -t 5000 "Couldn't connect" "${name#○ }"
+            notify 5000 "Couldn't connect" "${name#○ }"
         fi
         ;;
 esac

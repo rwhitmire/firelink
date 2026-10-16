@@ -9,7 +9,8 @@ An [Estus Labs](https://estuslabs.com) project. Site: https://firelink.estuslabs
 
 ## Install
 
-On Fedora 44 (with GDM), as your normal user:
+On Fedora 44, as your normal user. Workstation, a spin or a bare Server or
+minimal install all work: GNOME isn't needed, and if it's there it's left alone.
 
 ```bash
 curl -fsSL https://firelink.estuslabs.com/install | bash
@@ -17,21 +18,36 @@ curl -fsSL https://firelink.estuslabs.com/install | bash
 
 That clones this repo into `~/.local/share/firelink` and runs `install.sh`, which:
 
-1. installs the Fedora packages in `packages/dnf.txt` that are missing (the only
-   step that uses sudo). Alacritty is the only terminal, and no other apps are
-   installed.
-2. downloads [Satty](https://github.com/Satty-org/Satty) into `~/.local/bin` and
+1. installs the Fedora packages in `packages/dnf.txt` that are missing.
+   Alacritty is the only terminal, and no other apps are installed.
+2. sets up a login screen if the machine has none (Server, minimal): greetd with
+   tuigreet, which starts niri. GDM or another display manager is kept as is.
+   This and the packages are the only steps that use sudo.
+3. runs any new migrations: one-off fixes for installs made before a change to
+   Firelink (see `migrations/`)
+4. downloads [Satty](https://github.com/Satty-org/Satty) into `~/.local/bin` and
    the wallpapers into `wallpapers/`, each pinned and checked by sha256
-3. links the `firelink` command into `~/.local/bin`
-4. creates starter configs in `~/.config` (from `skel/`), only where none exist
-5. installs the session services and enables them for niri only
-6. applies the theme
+5. links the `firelink` command into `~/.local/bin`
+6. creates starter configs in `~/.config` (from `skel/`), only where none exist
+7. installs the session services and enables them for niri only
+8. applies the theme
 
-Then log out and pick **Niri** at the login screen. Re-running is safe; every step
+Then log out and pick **Niri** at the login screen (or reboot, if Firelink just
+set one up). Re-running is safe; every step
 skips what's already done.
 
 ## Using it
 
+- **Mod+Space** (or the Fedora logo in the bar) opens the Firelink menu: apps,
+  screenshots and recording, toggles for do not disturb, night light and the
+  bar, theme, clipboard, Wi-Fi, Bluetooth, keybinds, update and power
+- Click the network in the bar for the Wi-Fi menu (nearby networks, passwords
+  asked in fuzzel; hidden and enterprise networks and VPNs open
+  nm-connection-editor), or the Bluetooth icon to connect and pair devices
+  (pairing codes are shown or asked for in fuzzel)
+- **Mod+N** dismisses the latest notification, **Mod+Shift+N** all of them, and
+  **Mod+Ctrl+N** toggles do not disturb (only critical notifications show until
+  it's off; click the bell in the bar to turn it off)
 - `firelink theme [latte|frappe|macchiato|mocha]` switches the flavor
   (or **Mod+Ctrl+Shift+T**)
 - `firelink update` pulls the latest Firelink and re-runs the installer

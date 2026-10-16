@@ -341,6 +341,7 @@ binds {
     Mod+D hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel"; }
     Mod+B hotkey-overlay-title="Open the Default Browser" { spawn-sh "gtk-launch \"$(xdg-settings get default-web-browser)\""; }
     Super+Alt+L hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
+    Mod+Space hotkey-overlay-title="Firelink Menu" { spawn-sh "~/.local/share/firelink/bin/menu"; }
     Mod+Ctrl+Shift+T hotkey-overlay-title="Switch Theme" { spawn-sh "~/.local/share/firelink/bin/theme-menu"; }
 
     // Use spawn-sh to run a shell command. Do this if you need pipes, multiple commands, etc.
@@ -349,6 +350,11 @@ binds {
     Super+Alt+S allow-when-locked=true hotkey-overlay-title=null { spawn-sh "pkill orca || exec orca"; }
 
     Mod+Ctrl+V hotkey-overlay-title="Clipboard History" { spawn-sh "~/.local/share/firelink/bin/clipboard-menu"; }
+
+    // Do not disturb hides all but critical notifications until it's turned off.
+    Mod+N hotkey-overlay-title="Dismiss Notification" { spawn "makoctl" "dismiss"; }
+    Mod+Shift+N hotkey-overlay-title="Dismiss All Notifications" { spawn "makoctl" "dismiss" "--all"; }
+    Mod+Ctrl+N hotkey-overlay-title="Do Not Disturb (Toggle)" { spawn-sh "~/.local/share/firelink/bin/dnd"; }
 
     // Volume, mic and brightness keys go through ~/.local/share/firelink/bin/osd, which changes
     // the level (5% steps, volume capped at 100%) and shows it on the wob OSD bar.
@@ -580,6 +586,7 @@ binds {
     // a matching layout switch hotkey configured in xkb options above.
     // Having both at once on the same hotkey will break the switching,
     // since it will switch twice upon pressing the hotkey (once by xkb, once by niri).
+    // Mod+Space is taken by Firelink's menu: use other keys, or move the menu in your config.
     // Mod+Space       { switch-layout "next"; }
     // Mod+Shift+Space { switch-layout "prev"; }
 

@@ -7,6 +7,9 @@ Requisite=graphical-session.target
 [Service]
 ExecStart=/bin/sh -c 'c=$$HOME/.config/swayidle/config; [ -f "$$c" ] || c=$$HOME/.local/share/firelink/config/swayidle/config; exec swayidle -w -C "$$c"'
 Restart=on-failure
+# swaylock runs as swayidle's child. Stopping or restarting this unit (an update,
+# a crash) mustn't kill it: niri would show a red screen, still locked.
+KillMode=process
 
 [Install]
 WantedBy=niri.service

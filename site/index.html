@@ -336,12 +336,12 @@
 
     <section>
       <h2><span class="n">01</span> What it installs</h2>
-      <p>Only what the desktop needs. Packages come from Fedora's own repositories, and <code>sudo</code> is only used to install them. No browsers, chat apps or anything else you didn't ask for.</p>
+      <p>Only what the desktop needs. Packages come from Fedora's own repositories, and <code>sudo</code> is only used to install them (and to set up a login screen on machines without one). It works on Workstation, a spin or a bare Server install; GNOME isn't needed. No browsers, chat apps or anything else you didn't ask for.</p>
       <ul class="parts">
         <li><b>niri</b><span>The compositor. Scrolling tiling, an overview, gestures.</span></li>
         <li><b>Waybar</b><span>Workspaces, clock, audio, network, Bluetooth, battery.</span></li>
-        <li><b>fuzzel</b><span>The app launcher, plus power, Bluetooth, clipboard and theme menus.</span></li>
-        <li><b>mako, wob</b><span>Notifications, and a slim bar for volume and brightness.</span></li>
+        <li><b>fuzzel</b><span>The app launcher and one menu for everything else: capture, toggles, theme, Wi-Fi, Bluetooth, power.</span></li>
+        <li><b>mako, wob</b><span>Notifications with do not disturb, and a slim bar for volume and brightness.</span></li>
         <li><b>swaylock, swayidle</b><span>Locks after five minutes; suspends on battery.</span></li>
         <li><b>Satty</b><span>Screenshots you can annotate, plus screen recording.</span></li>
         <li><b>Alacritty, Neovim</b><span>The terminal and the editor.</span></li>
@@ -355,11 +355,13 @@
       <table class="keys">
         <tr><td><kbd>Super</kbd><kbd>T</kbd></td><td>Terminal</td></tr>
         <tr><td><kbd>Super</kbd><kbd>D</kbd></td><td>Launch an app</td></tr>
+        <tr><td><kbd>Super</kbd><kbd>Space</kbd></td><td>The Firelink menu: capture, toggles, theme, update, power</td></tr>
         <tr><td><kbd>Super</kbd><kbd>B</kbd></td><td>Web browser</td></tr>
         <tr><td><kbd>Super</kbd><kbd>O</kbd></td><td>Overview of every workspace</td></tr>
         <tr><td><kbd>Super</kbd><kbd>H</kbd><kbd>L</kbd></td><td>Scroll to the window on the left or right</td></tr>
         <tr><td><kbd>Super</kbd><kbd>Q</kbd></td><td>Close a window</td></tr>
         <tr><td><kbd>Super</kbd><kbd>Ctrl</kbd><kbd>V</kbd></td><td>Clipboard history</td></tr>
+        <tr><td><kbd>Super</kbd><kbd>Ctrl</kbd><kbd>N</kbd></td><td>Do not disturb</td></tr>
         <tr><td><kbd>Super</kbd><kbd>Print</kbd></td><td>Screenshot a region and annotate it</td></tr>
         <tr><td><kbd>Shift</kbd><kbd>Print</kbd></td><td>Start or stop recording a region</td></tr>
         <tr><td><kbd>Super</kbd><kbd>Shift</kbd><kbd>/</kbd></td><td>Every other key</td></tr>

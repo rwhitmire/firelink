@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+# Firelink menu (fuzzel): everything in one place, with submenus for capture and
+# toggles. Opened with Mod+Space in niri or by clicking the Fedora logo in waybar.
+
+firelink=$(dirname "$(dirname "$(readlink -f "$0")")")
+bin=$firelink/bin
+
+# pick PROMPT OPTION...: print the chosen option; fails if the menu is closed
+pick() {
+    local prompt=$1
+    shift
+    printf '%s\n' "$@" | fuzzel --dmenu --prompt "$prompt  " --lines "$#" --width 26
+}
+
+capture() {
+    local options=("Screenshot region" "Screenshot monitor" "Record region" "Record monitor")
+    # screenrecord stops a running recording whatever mode it's given
+    if [ -f "$XDG_RUNTIME_DIR/screenrecord.file" ]; then
+        options=("Stop recording" "${options[@]:0:2}")
+    fi
+    case $(pick "" "${options[@]}") in
+        "Screenshot region")  exec "$bin/screenshot" region ;;
+        "Screenshot monitor") exec "$bin/screenshot" output ;;
+        "Record region")      exec "$bin/screenrecord" region ;;
+        "Record monitor")     exec "$bin/screenrecord" output ;;
+        "Stop recording")     exec "$bin/screenrecord" ;;
+    esac
+}
+
+toggle() {
+    local dnd night
+    if makoctl mode | grep -qx do-not-disturb; then
+        dnd="Turn do not disturb off"
+    else
+        dnd="Turn do not disturb on"
+    fi
+    # Stopped only until the next login (or `firelink update`, which restarts units)
+    if systemctl --user -q is-active firelink-wlsunset; then
+        night="Turn night light off"
+    else
+        night="Turn night light on"
+    fi
+    case $(pick "" "$dnd" "$night" "Hide or show the bar") in
+        "Turn do not disturb"*) exec "$bin/dnd" ;;
+        "Turn night light off") systemctl --user stop firelink-wlsunset ;;
+        "Turn night light on")  systemctl --user start firelink-wlsunset ;;
+        "Hide or show the bar") pkill -USR1 -x waybar ;;
+    esac
+}
+
+case $(pick "" Apps Capture Toggle Theme Clipboard Wi-Fi Bluetooth Keybinds Update Power) in
+    Apps)      exec fuzzel ;;
+    Capture)   capture ;;
+    Toggle)    toggle ;;
+    Theme)     exec "$bin/theme-menu" ;;
+    Clipboard) exec "$bin/clipboard-menu" ;;
+    Wi-Fi)     exec "$bin/wifi-menu" ;;
+    Bluetooth) exec "$bin/bluetooth-menu" ;;
+    Keybinds)  niri msg action show-hotkey-overlay ;;
+    Update)
+        # Kept open afterwards so the output (and any sudo prompt) can be read
+        exec alacritty --title "Firelink update" -e bash -c \
+            '"$1" update; echo; read -rsn1 -p "Press any key to close"' _ "$bin/firelink"
+        ;;
+    Power)     exec "$bin/power-menu" ;;
+esac

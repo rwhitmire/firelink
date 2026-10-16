@@ -29,6 +29,7 @@ tooltip label {
 }
 
 /* Every module sits on its own rounded pill */
+#custom-menu,
 #workspaces,
 #window,
 #clock,
@@ -37,6 +38,7 @@ tooltip label {
 #idle_inhibitor,
 #bluetooth,
 #custom-recording,
+#custom-dnd,
 #pulseaudio,
 #network,
 #power-profiles-daemon,
@@ -86,6 +88,7 @@ window#waybar.empty #window {
     background: transparent;
 }
 
+#custom-menu { color: @blue; }
 #clock     { color: @lavender; }
 #idle_inhibitor { color: @overlay0; }
 #idle_inhibitor.activated { color: @yellow; }
@@ -98,6 +101,7 @@ window#waybar.empty #window {
     color: @mantle;
     background: @red;
 }
+#custom-dnd { color: @yellow; }
 #pulseaudio { color: @mauve; }
 #pulseaudio.muted { color: @overlay0; }
 #network   { color: @teal; }

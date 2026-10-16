@@ -1,0 +1,11 @@
+# Firelink's login screen: greetd with tuigreet, which starts niri. install.sh
+# copies this to /etc/greetd/config.toml only on machines without a display
+# manager (GDM and the like are left alone), and only while that file is still
+# the package's default. After that it's yours; install.sh won't touch it.
+[terminal]
+vt = 1
+
+[default_session]
+# F3 in tuigreet picks another session from /usr/share/wayland-sessions
+command = "tuigreet --time --asterisks --greeting 'Firelink' --cmd niri-session"
+user = "greetd"

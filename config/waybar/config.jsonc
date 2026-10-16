@@ -8,9 +8,16 @@
     "spacing": 6,
     "reload_style_on_change": true,
 
-    "modules-left": ["niri/workspaces", "niri/window"],
+    "modules-left": ["custom/menu", "niri/workspaces", "niri/window"],
     "modules-center": ["clock"],
-    "modules-right": ["custom/recording", "privacy", "tray", "idle_inhibitor", "bluetooth", "pulseaudio", "network", "power-profiles-daemon", "battery"],
+    "modules-right": ["custom/recording", "custom/dnd", "privacy", "tray", "idle_inhibitor", "bluetooth", "pulseaudio", "network", "power-profiles-daemon", "battery"],
+
+    // Opens the Firelink menu (also Mod+Space)
+    "custom/menu": {
+        "format": "",
+        "tooltip-format": "Firelink menu",
+        "on-click": "~/.local/share/firelink/bin/menu"
+    },
 
     "niri/workspaces": {
         "format": "{index}"
@@ -48,6 +55,15 @@
         "interval": "once",
         "signal": 8,
         "on-click": "~/.local/share/firelink/bin/screenrecord"
+    },
+
+    // Bell while do-not-disturb is on (bin/dnd sends signal 9). Click to turn it off.
+    "custom/dnd": {
+        "exec": "makoctl mode 2>/dev/null | grep -qx do-not-disturb && echo '{\"text\": \"\", \"tooltip\": \"Do not disturb: only critical notifications show. Click to turn it off\"}' || true",
+        "return-type": "json",
+        "interval": "once",
+        "signal": 9,
+        "on-click": "~/.local/share/firelink/bin/dnd"
     },
 
     // Shows up only while an app is using the mic or sharing the screen (calls, meetings)
@@ -99,7 +115,7 @@
         "format-disconnected": "  offline",
         "tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ipaddr}",
         "tooltip-format-ethernet": "{ifname}\n{ipaddr}",
-        "on-click": "alacritty -e nmtui"
+        "on-click": "~/.local/share/firelink/bin/wifi-menu"
     },
 
     "power-profiles-daemon": {

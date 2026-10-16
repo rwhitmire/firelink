@@ -1,0 +1,112 @@
+#!/usr/bin/env bash
+# Wi-Fi menu (fuzzel). Opened by clicking the network in waybar or from the
+# Firelink menu. Lists nearby networks (● connected,  needs a password),
+# connects, and asks for a password in fuzzel when a network needs one. Hidden
+# networks, enterprise logins and VPNs go through nm-connection-editor.
+
+# Saved Wi-Fi connections as "ssid<TAB>uuid"
+saved() {
+    nmcli -t -f UUID,TYPE connection show | while IFS=: read -r uuid type; do
+        [ "$type" = 802-11-wireless ] || continue
+        printf '%s\t%s\n' "$(nmcli --escape no -g 802-11-wireless.ssid connection show "$uuid")" "$uuid"
+    done
+}
+
+settings() { exec nm-connection-editor "$@"; }
+
+menu() {
+    fuzzel --dmenu --with-nth 1 --prompt "  " --width 36 "$@"
+}
+
+notify() { notify-send -a wifi -t "$1" "$2" "$3"; }
+
+if ! nmcli -t -f TYPE device | grep -qx wifi; then
+    options=()   # no Wi-Fi adapter: settings still covers wired and VPNs
+elif [ "$(nmcli -t -f WIFI general)" = enabled ]; then
+    # One line per network name (several access points can share one): its
+    # strongest signal, whether it's in use, and its security.
+    # "● Name  78%  <lock><TAB>Name<TAB>security"
+    networks=$(nmcli -t --escape no -f IN-USE,SIGNAL,SECURITY,SSID device wifi list --rescan no |
+        awk -F: -v lock="" '
+            {
+                ssid = $0; sub(/^[^:]*:[^:]*:[^:]*:/, "", ssid)
+                if (ssid == "") next   # hidden network
+                if ($1 == "*") used[ssid] = 1
+                if (!(ssid in signal) || $2 > signal[ssid]) signal[ssid] = $2
+                security[ssid] = $3
+            }
+            END {
+                for (s in signal) {
+                    secure = security[s] != "" && security[s] != "--"
+                    printf "%d\t%s %s  %s%%%s\t%s\t%s\n", (s in used) * 1000 + signal[s],
+                        (s in used) ? "●" : "○", s, signal[s], secure ? "  " lock : "", s, security[s]
+                }
+            }' | sort -t $'\t' -k1,1nr | cut -f2-)
+    options=(${networks:+"$networks"} "Scan again" "Turn Wi-Fi off")
+    # Scanning takes a few seconds, so the list is the last scan and a new one
+    # starts in the background for next time (or "Scan again")
+    nmcli device wifi rescan 2>/dev/null &
+else
+    options=("Turn Wi-Fi on")
+fi
+
+choice=$(printf '%s\n' "${options[@]}" "More settings…" | menu) || exit 0
+
+case "$choice" in
+    "Turn Wi-Fi off") nmcli radio wifi off ;;
+    "Turn Wi-Fi on")  nmcli radio wifi on ;;
+    "Scan again")
+        nmcli device wifi list --rescan yes >/dev/null
+        exec "$0"
+        ;;
+    "More settings…") settings ;;
+    "● "*)
+        ssid=$(cut -f2 <<<"$choice")
+        uuid=$(saved | awk -F'\t' -v s="$ssid" '$1 == s { print $2; exit }')
+        case $(printf '%s\n' Disconnect Forget | menu --lines 2 --prompt "  $ssid  ") in
+            Disconnect) nmcli connection down "$uuid" >/dev/null ;;
+            Forget)     nmcli connection delete "$uuid" >/dev/null ;;
+        esac
+        ;;
+    "○ "*)
+        ssid=$(cut -f2 <<<"$choice")
+        security=$(cut -f3 <<<"$choice")
+        uuid=$(saved | awk -F'\t' -v s="$ssid" '$1 == s { print $2; exit }')
+        if [ -n "$uuid" ]; then
+            if nmcli connection up "$uuid" >/dev/null 2>&1; then
+                notify 3000 "Connected" "$ssid"
+            else
+                notify 6000 "Couldn't connect to $ssid" "If its password changed, update it under More settings…"
+            fi
+            exit 0
+        fi
+        case "$security" in
+            *802.1X*)
+                # Enterprise login (username, certificates): nm-connection-editor
+                # can't be given the network, so say which one to enter
+                notify 15000 "Add $ssid" "Enter it as the SSID, then the sign-in details under Wi-Fi Security."
+                settings --create --type=802-11-wireless
+                ;;
+            ""|--)
+                if nmcli device wifi connect "$ssid" >/dev/null 2>&1; then
+                    notify 3000 "Connected" "$ssid"
+                else
+                    notify 6000 "Couldn't connect" "$ssid"
+                fi
+                ;;
+            *)
+                password=$(fuzzel --dmenu --password --prompt-only "  $ssid  " --width 36) || exit 0
+                [ -n "$password" ] || exit 0
+                if nmcli device wifi connect "$ssid" password "$password" >/dev/null 2>&1; then
+                    notify 3000 "Connected" "$ssid"
+                else
+                    # nmcli saves the connection even when the password is
+                    # wrong; remove it so the next try asks again
+                    uuid=$(saved | awk -F'\t' -v s="$ssid" '$1 == s { print $2; exit }')
+                    [ -n "$uuid" ] && nmcli connection delete "$uuid" >/dev/null
+                    notify 6000 "Couldn't connect to $ssid" "Check the password and try again."
+                fi
+                ;;
+        esac
+        ;;
+esac

@@ -1,5 +1,8 @@
 # Fedora packages Firelink needs, installed by install.sh. One per line; # starts a comment.
 # Only what the desktop needs to work, no other apps. Alacritty is the only terminal.
+# Complete on its own (Fedora Server or a minimal install), so it lists what Workstation
+# would otherwise provide, even what usually comes in as a weak dependency. The login
+# screen (greetd) is installed separately, only on machines without one.
 
 # Compositor and session
 niri
@@ -7,6 +10,7 @@ xwayland-satellite
 xdg-desktop-portal-gnome
 xdg-desktop-portal-gtk
 gnome-keyring
+gnome-keyring-pam
 mate-polkit
 
 # Bar, launcher, notifications, lock/idle, wallpaper, OSD, night light
@@ -35,20 +39,24 @@ wl-clipboard
 cliphist
 
 # Audio, brightness, power, bluetooth, network
+pipewire
+pipewire-pulseaudio
+pipewire-alsa
 wireplumber
 brightnessctl
 playerctl
 upower
 tuned-ppd
 bluez
-NetworkManager-tui
+NetworkManager
+NetworkManager-wifi
+nm-connection-editor
 
-# Used by the scripts: notifications, JSON, default browser, bluetooth pairing
+# Used by the scripts: notifications, JSON, default browser
 libnotify
 jq
 gtk3
 xdg-utils
-gnome-control-center
 curl
 
 # Neovim, plus what plugin managers commonly need to build plugins and parsers
@@ -62,6 +70,7 @@ tree-sitter-cli
 
 # Fonts
 adwaita-sans-fonts
+adwaita-mono-fonts
 fontawesome-6-free-fonts
 fontawesome-6-brands-fonts
 

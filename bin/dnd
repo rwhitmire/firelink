@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Toggle mako's do-not-disturb mode, which hides all but critical notifications
+# until it's turned off again (then they show). Opened with Mod+Ctrl+N in niri,
+# the menu's Toggle submenu, or by clicking the bell in waybar.
+
+makoctl mode -t do-not-disturb >/dev/null
+pkill -RTMIN+9 -x waybar || true   # refresh the bell (custom/dnd)

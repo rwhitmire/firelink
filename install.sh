@@ -5,7 +5,8 @@
 #   curl -fsSL https://firelink.estuslabs.com/install | bash   (clones, then runs this)
 #   ./install.sh                                                (from a checkout)
 #
-# Run as your normal user; it asks for sudo only to install missing packages.
+# Run as your normal user; it asks for sudo only to install missing packages
+# and, on a machine without a login screen, to set up greetd.
 # Safe to re-run: every step skips what's already done (`firelink update` does
 # exactly that). It never overwrites your own configs in ~/.config.
 set -euo pipefail
@@ -55,12 +56,70 @@ fi
 step "Fedora packages"
 mapfile -t pkgs < <(list "$home/packages/dnf.txt")
 mapfile -t missing < <(rpm -q "${pkgs[@]}" | sed -nE 's/^package (.+) is not installed$/\1/p')
+# Older installs may have power-profiles-daemon, which does tuned-ppd's job and
+# conflicts with it
+if rpm -q --quiet power-profiles-daemon; then
+    mapfile -t missing < <(printf '%s\n' "${missing[@]}" | grep -vx -e tuned-ppd -e '')
+fi
 if [ "${#missing[@]}" -gt 0 ]; then
     note "installing: ${missing[*]}"
     sudo dnf install -y "${missing[@]}"
 else
-    note "all ${#pkgs[@]} installed"
+    note "all installed"
 fi
+
+step "Login screen"
+# GDM (or any other display manager) already lists Niri, so it's left alone. A
+# machine without one (Fedora Server, a minimal install) gets greetd.
+dm=
+if [ -e /etc/systemd/system/display-manager.service ]; then
+    dm=$(readlink -f /etc/systemd/system/display-manager.service)
+    dm=${dm##*/}
+fi
+new_login=
+if [ -n "$dm" ] && [ "$dm" != greetd.service ]; then
+    note "using ${dm%.service}"
+else
+    mapfile -t missing < <(rpm -q greetd tuigreet | sed -nE 's/^package (.+) is not installed$/\1/p')
+    if [ "${#missing[@]}" -gt 0 ]; then
+        note "installing: ${missing[*]}"
+        sudo dnf install -y "${missing[@]}"
+    fi
+    # Only replaced while it's the package's default: after that it's the admin's
+    verify=$(rpm -V greetd || true)
+    if ! grep -q ' /etc/greetd/config.toml$' <<<"$verify"; then
+        sudo install -m 644 "$home/config/greetd/config.toml" /etc/greetd/config.toml
+        note "set up /etc/greetd/config.toml (tuigreet, starting niri)"
+    elif ! grep -q Firelink /etc/greetd/config.toml; then
+        note "kept your /etc/greetd/config.toml; its command should start niri-session"
+    fi
+    if [ "$dm" != greetd.service ]; then
+        sudo systemctl enable greetd.service
+        new_login=1
+    fi
+    if [ "$(systemctl get-default)" != graphical.target ]; then
+        sudo systemctl set-default graphical.target
+        new_login=1
+    fi
+    note "using greetd"
+fi
+
+step "Migrations"
+# One-off fixes for installs made before a change to Firelink (a renamed unit, a
+# moved file). Each runs once, recorded in $state/migrations; one that fails
+# stops the install and runs again next time. See migrations/README.md.
+mkdir -p "$state/migrations"
+ran=()
+for migration in "$home"/migrations/*.sh; do
+    [ -e "$migration" ] || continue
+    name=${migration##*/}
+    [ -e "$state/migrations/$name" ] && continue
+    note "running ${name%.sh}"
+    firelink=$home state=$state config=$config bash -euo pipefail "$migration"
+    touch "$state/migrations/$name"
+    ran+=("$name")
+done
+if [ "${#ran[@]}" -eq 0 ]; then note "none to run"; fi
 
 step "Satty"
 mkdir -p ~/.local/bin
@@ -135,9 +194,17 @@ note "Catppuccin $(cat "$state/flavor") (switch with Mod+Ctrl+Shift+T or firelin
 step "Done"
 if [ "${XDG_CURRENT_DESKTOP:-}" = niri ]; then
     # Already in niri (an update): start anything new, restart the rest so
-    # changed units take effect
-    systemctl --user restart "${units[@]}"
-    note "Firelink is up to date."
+    # changed units take effect. While the screen is locked (an update over
+    # SSH) only start them, leaving the lock screen alone.
+    if pgrep -u "$USER" -x swaylock >/dev/null; then
+        systemctl --user start "${units[@]}"
+        note "Firelink is up to date (the screen is locked; changed services restart at your next login)."
+    else
+        systemctl --user restart "${units[@]}"
+        note "Firelink is up to date."
+    fi
+elif [ -n "$new_login" ]; then
+    note "Reboot, then log in at the new login screen; it starts niri."
 else
     note "Log out and pick Niri at the login screen."
 fi
