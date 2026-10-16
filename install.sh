@@ -55,6 +55,13 @@ fi
 
 step "Fedora packages"
 mapfile -t pkgs < <(list "$home/packages/dnf.txt")
+# In a VM, its guest agent: without one the screen doesn't follow the size of
+# the VM's window (Workstation installs these; a minimal install doesn't)
+case $(systemd-detect-virt --vm 2>/dev/null) in
+    kvm|qemu) pkgs+=(spice-vdagent) ;;               # GNOME Boxes, virt-manager
+    vmware)   pkgs+=(open-vm-tools-desktop) ;;
+    oracle)   pkgs+=(virtualbox-guest-additions) ;;
+esac
 mapfile -t missing < <(rpm -q "${pkgs[@]}" | sed -nE 's/^package (.+) is not installed$/\1/p')
 # Older installs may have power-profiles-daemon, which does tuned-ppd's job and
 # conflicts with it
