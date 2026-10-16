@@ -10,7 +10,7 @@
 
     "modules-left": ["custom/menu", "niri/workspaces", "niri/window"],
     "modules-center": ["clock"],
-    "modules-right": ["custom/recording", "custom/dnd", "privacy", "tray", "idle_inhibitor", "bluetooth", "pulseaudio", "network", "power-profiles-daemon", "battery"],
+    "modules-right": ["custom/update", "custom/recording", "custom/dnd", "privacy", "tray", "idle_inhibitor", "bluetooth", "pulseaudio", "network", "power-profiles-daemon", "battery"],
 
     // Opens the Firelink menu (also Mod+Space)
     "custom/menu": {
@@ -45,6 +45,16 @@
     "tray": {
         "icon-size": 16,
         "spacing": 10
+    },
+
+    // Shows while a Firelink update is available (bin/updates check, run by
+    // firelink-update-check.timer, sends signal 10). Click to update.
+    "custom/update": {
+        "exec": "~/.local/share/firelink/bin/updates status",
+        "return-type": "json",
+        "interval": "once",
+        "signal": 10,
+        "on-click": "~/.local/share/firelink/bin/updates install"
     },
 
     // Red dot while bin/screenrecord is recording (it sends signal 8 on start/stop).

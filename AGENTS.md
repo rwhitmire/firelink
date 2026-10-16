@@ -19,7 +19,7 @@ user-facing description; this file is what an agent needs to change it safely.
   editing `skel/` (existing users never get it); change `config/` instead.
 - `bin/` has the scripts the binds, bar and units call: `menu` (the Firelink
   menu, Mod+Space), `theme-set`, `theme-menu`, `wallpaper`, `osd`,
-  `clipboard-menu`, `wifi-menu`, `bluetooth-menu`, `power-menu`, `dnd`, `screenshot`,
+  `clipboard-menu`, `wifi-menu`, `bluetooth-menu`, `power-menu`, `dnd`, `updates`, `screenshot`,
   `screenrecord`, `peripheral-battery-watch`. A new menu belongs in `menu` too.
 - `systemd/` has the units, named `firelink-*`, `WantedBy=niri.service`.
   `install.sh` copies them (never links: `systemctl disable` deletes a linked

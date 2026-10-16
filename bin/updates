@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# Firelink updates.
+#   updates check     fetch main and note any new commits (fetch only: the checkout
+#                     doesn't change). Run by firelink-update-check.timer.
+#   updates status    waybar's custom/update module: an icon while there's an update
+#   updates install   run `firelink update` in a terminal. Clicking the icon, or
+#                     Update in the Firelink menu.
+
+firelink=$(dirname "$(dirname "$(readlink -f "$0")")")
+state=${XDG_STATE_HOME:-$HOME/.local/state}/firelink
+pending=$state/updates   # subjects of the new commits, one per line
+
+case "${1:-}" in
+    check)
+        [ -d "$firelink/.git" ] || exit 0
+        git -C "$firelink" fetch -q origin main 2>/dev/null || exit 0   # offline: next time
+        mkdir -p "$state"
+        git -C "$firelink" log --format=%s HEAD..origin/main > "$pending.tmp"
+        if [ -s "$pending.tmp" ]; then mv "$pending.tmp" "$pending"; else rm -f "$pending.tmp" "$pending"; fi
+        pkill -RTMIN+10 -x waybar || true
+        ;;
+    status)
+        [ -s "$pending" ] || exit 0
+        n=$(wc -l < "$pending")
+        # Tooltips are Pango markup
+        list=$(head -n 10 "$pending" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g; s/^/• /')
+        [ "$n" -gt 10 ] && list+=$'\n'"and $((n - 10)) more"
+        jq -nc --arg n "$n" --arg list "$list" '{
+            text: "",
+            tooltip: "Firelink update: \($n) new \(if $n == "1" then "change" else "changes" end)\n\($list)\n\nClick to update"
+        }'
+        ;;
+    install)
+        # Kept open afterwards so the output (and any sudo prompt) can be read
+        exec alacritty --title "Firelink update" -e bash -c \
+            '"$1" update; echo; read -rsn1 -p "Press any key to close"' _ "$firelink/bin/firelink"
+        ;;
+    *)
+        sed -n '2,7s/^# \{0,1\}//p' "$0"
+        exit 1
+        ;;
+esac

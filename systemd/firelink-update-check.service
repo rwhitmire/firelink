@@ -1,0 +1,6 @@
+[Unit]
+Description=Check for a Firelink update (git fetch only; changes nothing)
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/share/firelink/bin/updates check

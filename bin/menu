@@ -48,7 +48,12 @@ toggle() {
     esac
 }
 
-case $(pick "" Apps Capture Toggle Theme Clipboard Wi-Fi Bluetooth Keybinds Update Power) in
+# "Update (3 new)" when `updates check` has found some
+update=Update
+pending=${XDG_STATE_HOME:-$HOME/.local/state}/firelink/updates
+[ -s "$pending" ] && update="Update ($(wc -l < "$pending") new)"
+
+case $(pick "" Apps Capture Toggle Theme Clipboard Wi-Fi Bluetooth Keybinds "$update" Power) in
     Apps)      exec fuzzel ;;
     Capture)   capture ;;
     Toggle)    toggle ;;
@@ -57,10 +62,6 @@ case $(pick "" Apps Capture Toggle Theme Clipboard Wi-Fi Bluetooth Keybinds U
     Wi-Fi)     exec "$bin/wifi-menu" ;;
     Bluetooth) exec "$bin/bluetooth-menu" ;;
     Keybinds)  niri msg action show-hotkey-overlay ;;
-    Update)
-        # Kept open afterwards so the output (and any sudo prompt) can be read
-        exec alacritty --title "Firelink update" -e bash -c \
-            '"$1" update; echo; read -rsn1 -p "Press any key to close"' _ "$bin/firelink"
-        ;;
+    Update*)   exec "$bin/updates" install ;;
     Power)     exec "$bin/power-menu" ;;
 esac

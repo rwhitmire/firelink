@@ -37,6 +37,7 @@ tooltip label {
 #privacy,
 #idle_inhibitor,
 #bluetooth,
+#custom-update,
 #custom-recording,
 #custom-dnd,
 #pulseaudio,
@@ -101,6 +102,7 @@ window#waybar.empty #window {
     color: @mantle;
     background: @red;
 }
+#custom-update { color: @green; }
 #custom-dnd { color: @yellow; }
 #pulseaudio { color: @mauve; }
 #pulseaudio.muted { color: @overlay0; }

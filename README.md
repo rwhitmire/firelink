@@ -50,7 +50,9 @@ skips what's already done.
   it's off; click the bell in the bar to turn it off)
 - `firelink theme [latte|frappe|macchiato|mocha]` switches the flavor
   (or **Mod+Ctrl+Shift+T**)
-- `firelink update` pulls the latest Firelink and re-runs the installer
+- `firelink update` pulls the latest Firelink and re-runs the installer. When
+  there's an update, an icon shows in the bar (its tooltip lists what's new);
+  click it, or **Update** in the Firelink menu, to run it
 - **Mod+Shift+/** lists the keybinds
 
 ## Your configs
@@ -106,6 +108,7 @@ GNOME login on the same machine is left alone). Waybar and mako use Fedora's uni
 | `firelink-wlsunset` | night light, 4000K from 19:30 to 07:00 |
 | `firelink-wob.socket` | volume/brightness OSD |
 | `firelink-battery-watch` | low-battery alerts for wireless keyboards and mice |
+| `firelink-update-check.timer` | `git fetch` 2 minutes after login and every 6 hours; shows the update icon |
 
 ## Website
 

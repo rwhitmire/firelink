@@ -1,0 +1,10 @@
+[Unit]
+Description=Check for Firelink updates shortly after login, then every 6 hours
+PartOf=graphical-session.target
+
+[Timer]
+OnActiveSec=2min
+OnUnitActiveSec=6h
+
+[Install]
+WantedBy=niri.service

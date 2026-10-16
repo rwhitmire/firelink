@@ -249,6 +249,7 @@ gestures {
 //   firelink-wlsunset            night light
 //   firelink-wob.socket          volume/brightness OSD
 //   firelink-battery-watch       low-battery alerts for wireless keyboards and mice
+//   firelink-update-check.timer  checks for Firelink updates (icon in the bar)
 // `systemctl --user status <name>` to check one.
 
 // The wallpaper is also drawn behind the overview.
