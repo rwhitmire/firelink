@@ -30,13 +30,14 @@ main() {
 
     if [ -d "$dir/.git" ]; then
         echo "firelink: updating $dir"
-        git -C "$dir" pull --ff-only
+        # main, by name: clones made while the default branch was master track it
+        git -C "$dir" pull --ff-only origin main
     elif [ -e "$dir" ]; then
         echo "firelink: $dir exists but isn't a Firelink checkout; move it aside and retry" >&2
         exit 1
     else
         echo "firelink: cloning into $dir"
-        git clone --depth 1 "$repo" "$dir"
+        git clone --depth 1 --branch main "$repo" "$dir"
     fi
 
     # This script arrives on stdin, so give the installer the terminal back

@@ -15,7 +15,8 @@ case "${1:-help}" in
         ;;
     update)
         if [ -d "$firelink/.git" ]; then
-            git -C "$firelink" pull --ff-only
+            # main, by name: clones made while the default branch was master track it
+            git -C "$firelink" pull --ff-only origin main
         fi
         exec "$firelink/install.sh"
         ;;
