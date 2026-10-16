@@ -5,5 +5,9 @@
   "compatibility_date": "2026-10-01",
   "assets": {
     "directory": "./site"
-  }
+  },
+  // Deploying attaches firelink.estuslabs.com and creates its DNS record
+  "routes": [
+    { "pattern": "firelink.estuslabs.com", "custom_domain": true }
+  ]
 }
