@@ -5,7 +5,7 @@
 #
 # Clones Firelink into ~/.local/share/firelink (or updates it if it's already
 # there), then runs its install.sh. Read that script first if you like:
-# https://github.com/rwhitmire/firelink/blob/master/install.sh
+# https://github.com/rwhitmire/firelink/blob/main/install.sh
 #
 # Everything is inside main(), so a partly downloaded script doesn't run.
 
