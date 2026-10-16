@@ -1,10 +1,16 @@
 #!/usr/bin/env bash
 # Draw the background on every output (run by firelink-swaybg.service).
-# theme-set points $state/wallpaper at the flavor's image, or removes it when the
-# image isn't downloaded; then the flavor's base color is used instead.
+# Your own image at ~/.config/firelink/wallpaper wins and stays across theme
+# switches. Otherwise theme-set points $state/wallpaper at the flavor's image,
+# or removes it when the image isn't downloaded; then the flavor's base color
+# is used instead.
 
 state=${XDG_STATE_HOME:-$HOME/.local/state}/firelink
+mine=${XDG_CONFIG_HOME:-$HOME/.config}/firelink/wallpaper
 
+if [ -e "$mine" ]; then
+    exec swaybg -m fill -i "$mine"
+fi
 if [ -e "$state/wallpaper" ]; then
     exec swaybg -m fill -i "$state/wallpaper"
 fi

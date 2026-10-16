@@ -78,7 +78,11 @@ updates never overwrite them.
 | alacritty | `~/.config/alacritty/alacritty.toml` | `import` |
 | swayidle | `~/.config/swayidle/config` | none: copy Firelink's there to change it |
 
-Set your monitors in `~/.config/niri/config.kdl` (names from `niri msg outputs`).
+Set your monitors in `~/.config/niri/config.kdl` (names and modes from
+`niri msg outputs`; try a setting first with `niri msg output <name> scale 1.5`).
+For your own wallpaper, copy an image to `~/.config/firelink/wallpaper` and run
+`systemctl --user restart firelink-swaybg`; it stays across theme switches. The
+site has [guides for both](https://firelink.estuslabs.com/#displays).
 
 ## Theme
 
