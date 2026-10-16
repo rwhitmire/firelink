@@ -183,8 +183,14 @@ step "Session services"
 # Wanted by niri.service, not graphical-session.target, which GNOME starts too.
 units=()
 for unit in "$home"/systemd/*; do
+    [ -f "$unit" ] || continue
     install -D -m 644 "$unit" "$config/systemd/user/${unit##*/}"
     grep -q '^WantedBy=' "$unit" && units+=("${unit##*/}")
+done
+# Drop-ins that change other packages' user units (<unit>.d/firelink.conf)
+for dropin in "$home"/systemd/*.d/*.conf; do
+    [ -e "$dropin" ] || continue
+    install -D -m 644 "$dropin" "$config/systemd/user/${dropin#"$home"/systemd/}"
 done
 systemctl --user daemon-reload
 systemctl --user enable "${units[@]}"
@@ -208,6 +214,8 @@ if [ "${XDG_CURRENT_DESKTOP:-}" = niri ]; then
         note "Firelink is up to date (the screen is locked; changed services restart at your next login)."
     else
         systemctl --user restart "${units[@]}"
+        # Re-checks the drop-in's condition, so a running agent stops
+        systemctl --user try-restart spice-vdagent.service 2>/dev/null || true
         note "Firelink is up to date."
     fi
 elif [ -n "$new_login" ]; then

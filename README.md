@@ -23,7 +23,9 @@ curl -fsSL https://firelink.estuslabs.com/install | bash
 That clones this repo into `~/.local/share/firelink` and runs `install.sh`, which:
 
 1. installs the Fedora packages in `packages/dnf.txt` that are missing, plus,
-   in a VM, its guest agent, so the screen follows the VM window's size.
+   in a VM, its guest agent, so the screen follows the VM window's size (its
+   per-session part stays off in niri, where it puts the pointer in the wrong
+   place).
    Alacritty is the terminal and Nautilus the file manager (**Mod+E**); no
    other apps are installed.
 2. sets up a login screen if the machine has none (Server, minimal): greetd with

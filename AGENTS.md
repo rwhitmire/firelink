@@ -25,6 +25,8 @@ user-facing description; this file is what an agent needs to change it safely.
   `install.sh` copies them (never links: `systemctl disable` deletes a linked
   unit file) and attaches Fedora's waybar and mako units with `add-wants`.
   niri spawns nothing at startup, so add new daemons as units here.
+  `<unit>.d/firelink.conf` drop-ins change other packages' user units (e.g.
+  keeping spice-vdagent's session agent out of niri); they're copied too.
 - `migrations/`: one-off scripts `install.sh` runs once per machine, for
   cleaning up after a change; rules in `migrations/README.md`.
 - `theme/palettes/`, `theme/templates/`, `theme/wallpapers.txt`: see Theme below.
