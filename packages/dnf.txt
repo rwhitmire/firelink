@@ -76,3 +76,6 @@ fontawesome-6-brands-fonts
 
 # Updates (`firelink update` pulls the repo)
 git
+
+# Used by install.sh (Satty's release is a .tar.gz); not in a Minimal Install
+tar
