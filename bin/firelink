@@ -2,7 +2,8 @@
 # firelink: manage the Firelink desktop.
 #   firelink theme [flavor]   switch Catppuccin flavor (latte, frappe, macchiato,
 #                             mocha); no flavor re-applies the current one
-#   firelink update           pull the latest Firelink and re-run its installer
+#   firelink update [--force] pull the latest Firelink and run its installer, if
+#                             there's anything new (--force runs it regardless)
 #   firelink help
 set -euo pipefail
 
@@ -18,11 +19,18 @@ case "${1:-help}" in
             # main, by name: clones made while the default branch was master track it
             git -C "$firelink" pull --ff-only origin main
             "$firelink/bin/updates" check   # clears the bar's update icon
+            state=${XDG_STATE_HOME:-$HOME/.local/state}/firelink
+            if [ "${2:-}" != --force ] &&
+                [ "$(git -C "$firelink" rev-parse HEAD)" = "$(cat "$state/installed" 2>/dev/null)" ]; then
+                echo "Firelink is up to date ($(git -C "$firelink" log -1 --format='%h, %cs'))."
+                echo "To run the installer anyway (to repair an install): firelink update --force"
+                exit 0
+            fi
         fi
         exec "$firelink/install.sh"
         ;;
     help|-h|--help)
-        sed -n '2,7s/^# \{0,1\}//p' "$0"
+        sed -n '2,8s/^# \{0,1\}//p' "$0"
         ;;
     *)
         echo "firelink: unknown command '$1' (try: firelink help)" >&2

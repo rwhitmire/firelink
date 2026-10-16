@@ -204,6 +204,12 @@ mkdir -p "$state"
 "$home/bin/theme-set"
 note "Catppuccin $(cat "$state/flavor") (switch with Mod+Ctrl+Shift+T or firelink theme <flavor>)"
 
+# The commit this run installed, so `firelink update` can skip the installer when
+# nothing new was pulled (only after a successful run, so a failed one is retried)
+if [ -d "$home/.git" ]; then
+    git -C "$home" rev-parse HEAD > "$state/installed"
+fi
+
 step "Done"
 if [ "${XDG_CURRENT_DESKTOP:-}" = niri ]; then
     # Already in niri (an update): start anything new, restart the rest so

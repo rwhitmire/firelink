@@ -68,7 +68,7 @@ user-facing description; this file is what an agent needs to change it safely.
   behind on existing installs (a renamed or removed unit, a moved state file, a
   generated file nothing uses), add `migrations/<YYYYMMDDHHMM>-<slug>.sh`
   instead of teaching `install.sh` about old layouts.
-- **`install.sh` must stay safe to re-run** (`firelink update` does exactly
+- **`install.sh` must stay safe to re-run** (`firelink update --force` does exactly
   that) and use sudo only for `dnf install` of missing packages and, on a
   machine with no display manager, setting up greetd (`config/greetd/`, copied
   to `/etc` only while the file there is the package's default).

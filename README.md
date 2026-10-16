@@ -61,9 +61,11 @@ skips what's already done.
   it's off; click the bell in the bar to turn it off)
 - `firelink theme [latte|frappe|macchiato|mocha]` switches the flavor
   (or **Mod+Ctrl+Shift+T**)
-- `firelink update` pulls the latest Firelink and re-runs the installer. When
-  there's an update, an icon shows in the bar (its tooltip lists what's new);
-  click it, or **Update** in the Firelink menu, to run it
+- `firelink update` pulls the latest Firelink and re-runs the installer, or
+  says it's up to date when there's nothing new (`--force` re-runs it anyway,
+  to repair an install). When there's an update, an icon shows in the bar (its
+  tooltip lists what's new); click it, or **Update** in the Firelink menu, to
+  run it
 - **Mod+Shift+/** lists the keybinds
 
 ## Your configs
