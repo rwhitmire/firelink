@@ -219,6 +219,14 @@ if [ "${XDG_CURRENT_DESKTOP:-}" = niri ]; then
         systemctl --user start "${units[@]}"
         note "Firelink is up to date (the screen is locked; changed services restart at your next login)."
     else
+        # systemd won't restart a socket while the service it started is
+        # running, so stop both first; the socket starts the service again
+        # when it's next written to.
+        sockets=()
+        for unit in "${units[@]}"; do
+            [[ $unit == *.socket ]] && sockets+=("$unit" "${unit%.socket}.service")
+        done
+        [ ${#sockets[@]} -eq 0 ] || systemctl --user stop "${sockets[@]}"
         systemctl --user restart "${units[@]}"
         # Re-checks the drop-in's condition, so a running agent stops
         systemctl --user try-restart spice-vdagent.service 2>/dev/null || true
