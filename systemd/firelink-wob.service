@@ -1,0 +1,9 @@
+[Unit]
+Description=Volume/brightness OSD bar (colors in ~/.config/wob/wob.ini, from theme-set)
+PartOf=graphical-session.target
+After=graphical-session.target
+Requisite=graphical-session.target
+
+[Service]
+StandardInput=socket
+ExecStart=/usr/bin/wob

@@ -1,0 +1,13 @@
+[Unit]
+Description=FIFO for wob, the volume/brightness OSD (written to by Firelink's bin/osd)
+PartOf=graphical-session.target
+
+[Socket]
+ListenFIFO=%t/wob.sock
+SocketMode=0600
+RemoveOnStop=on
+# Drop stale values queued while wob was down
+FlushPending=yes
+
+[Install]
+WantedBy=niri.service

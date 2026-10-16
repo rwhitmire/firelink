@@ -1,0 +1,129 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 34,
+    "margin-top": 6,
+    "margin-left": 8,
+    "margin-right": 8,
+    "spacing": 6,
+    "reload_style_on_change": true,
+
+    "modules-left": ["niri/workspaces", "niri/window"],
+    "modules-center": ["clock"],
+    "modules-right": ["custom/recording", "privacy", "tray", "idle_inhibitor", "bluetooth", "pulseaudio", "network", "power-profiles-daemon", "battery"],
+
+    "niri/workspaces": {
+        "format": "{index}"
+    },
+
+    "niri/window": {
+        "format": "{title}",
+        "max-length": 60,
+        "separate-outputs": true
+    },
+
+    "clock": {
+        "format": "{:%a %b %d  %I:%M %p}",
+        "tooltip-format": "<tt>{calendar}</tt>",
+        "calendar": {
+            "mode": "month",
+            "format": {
+                "months": "<span color='#cba6f7'><b>{}</b></span>",
+                "weekdays": "<span color='#f9e2af'><b>{}</b></span>",
+                "today": "<span color='#89b4fa'><b><u>{}</u></b></span>"
+            }
+        }
+    },
+
+    "tray": {
+        "icon-size": 16,
+        "spacing": 10
+    },
+
+    // Red dot while bin/screenrecord is recording (it sends signal 8 on start/stop).
+    // Its recorders capture the screen directly, so the privacy module can't see them.
+    "custom/recording": {
+        "exec": "[ -f \"$XDG_RUNTIME_DIR/screenrecord.file\" ] && echo '{\"text\": \"  REC\", \"tooltip\": \"Recording. Click to stop\"}' || true",
+        "return-type": "json",
+        "interval": "once",
+        "signal": 8,
+        "on-click": "~/.local/share/firelink/bin/screenrecord"
+    },
+
+    // Shows up only while an app is using the mic or sharing the screen (calls, meetings)
+    "privacy": {
+        "icon-size": 14,
+        "icon-spacing": 8,
+        "modules": [
+            { "type": "screenshare", "tooltip": true },
+            { "type": "audio-in", "tooltip": true }
+        ]
+    },
+
+    // Click to keep the screen from locking or sleeping (builds, presentations)
+    "idle_inhibitor": {
+        "format": "{icon}",
+        "format-icons": {
+            "activated": "",
+            "deactivated": ""
+        },
+        "tooltip-format-activated": "Staying awake: auto-lock is off",
+        "tooltip-format-deactivated": "Auto-lock is on"
+    },
+
+    "bluetooth": {
+        "format": "",
+        "format-off": "",
+        "format-disabled": "",
+        "format-connected": "  {num_connections}",
+        "tooltip-format": "Bluetooth {status}",
+        "tooltip-format-connected": "{device_enumerate}",
+        "tooltip-format-enumerate-connected": "{device_alias}",
+        "tooltip-format-enumerate-connected-battery": "{device_alias}  {device_battery_percentage}%",
+        "on-click": "~/.local/share/firelink/bin/bluetooth-menu"
+    },
+
+    "pulseaudio": {
+        "format": "{icon}  {volume}%",
+        "format-muted": "  muted",
+        "format-icons": {
+            "default": ["", "", ""]
+        },
+        "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+        "scroll-step": 5
+    },
+
+    "network": {
+        "format-wifi": "  {essid}",
+        "format-ethernet": "  wired",
+        "format-disconnected": "  offline",
+        "tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ipaddr}",
+        "tooltip-format-ethernet": "{ifname}\n{ipaddr}",
+        "on-click": "alacritty -e nmtui"
+    },
+
+    "power-profiles-daemon": {
+        "format": "{icon}",
+        "tooltip-format": "Power profile: {profile}",
+        "format-icons": {
+            "default": "",
+            "power-saver": "",
+            "balanced": "",
+            "performance": ""
+        }
+    },
+
+    "battery": {
+        "interval": 30,
+        "states": {
+            "warning": 25,
+            "critical": 10
+        },
+        "format": "{icon}  {capacity}%",
+        "format-charging": "  {capacity}%",
+        "format-plugged": "  {capacity}%",
+        "format-icons": ["", "", "", "", ""],
+        "tooltip-format": "{timeTo}",
+        "on-click": "~/.local/share/firelink/bin/power-menu"
+    }
+}

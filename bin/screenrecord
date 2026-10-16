@@ -1,0 +1,77 @@
+#!/bin/bash
+# Toggle a screen recording, saved to ~/Videos/Recordings.
+# Usage: screenrecord [region|output]
+#   region  select an area with slurp (default)
+#   output  record the focused monitor
+# Running it again while a recording is active stops it.
+#
+# Records with gpu-screen-recorder (Flatpak, hardware encoding). If it isn't
+# installed or exits right away, falls back to wf-recorder.
+
+set -euo pipefail
+export PATH="$HOME/.local/bin:$PATH"
+
+gsr_app=com.dec05eba.gpu_screen_recorder
+dir="$HOME/Videos/Recordings"
+state="${XDG_RUNTIME_DIR:-/tmp}/screenrecord.file"
+
+notify() { notify-send -a screenrecord -t 3000 "$@" || true; }
+# Waybar shows a red dot while the state file exists (custom/recording, signal 8)
+bar() { pkill -RTMIN+8 -x waybar || true; }
+
+# Stop an active recording. SIGINT makes both recorders finalize the file.
+if pkill -INT -f "^(.*/)?gpu-screen-recorder( |$)" || pkill -INT -x wf-recorder; then
+  file=$(cat "$state" 2>/dev/null || true)
+  rm -f "$state"
+  bar
+  notify "Recording saved" "${file:-$dir}"
+  exit 0
+fi
+
+mode=${1:-region}
+mkdir -p "$dir"
+file="$dir/Recording from $(date '+%Y-%m-%d %H-%M-%S').mp4"
+
+case "$mode" in
+  region)
+    geom=$(slurp -d -f '%x %y %w %h') || exit 0 # Esc cancels
+    read -r x y w h <<<"$geom"
+    gsr_target=(-w region -region "${w}x${h}+${x}+${y}")
+    wf_target=(-g "$x,$y ${w}x${h}")
+    ;;
+  output)
+    output=$(niri msg -j focused-output | jq -r .name)
+    gsr_target=(-w "$output")
+    wf_target=(-o "$output")
+    ;;
+  *)
+    echo "usage: screenrecord [region|output]" >&2
+    exit 1
+    ;;
+esac
+
+echo "$file" >"$state"
+bar
+
+if flatpak info "$gsr_app" &>/dev/null; then
+  flatpak run --command=gpu-screen-recorder "$gsr_app" \
+    "${gsr_target[@]}" -f 60 -a default_output -o "$file" &
+  pid=$!
+  sleep 1.5
+  if kill -0 "$pid" 2>/dev/null; then
+    notify "Recording started" "Run again to stop"
+    wait "$pid" || true
+    exit 0
+  fi
+fi
+
+if command -v wf-recorder &>/dev/null; then
+  notify "Recording started" "Run again to stop (wf-recorder)"
+  wf-recorder "${wf_target[@]}" --audio -f "$file" || true
+  exit 0
+fi
+
+rm -f "$state"
+bar
+notify -u critical "Recording failed" "Neither gpu-screen-recorder nor wf-recorder could start"
+exit 1

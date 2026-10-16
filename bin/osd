@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Volume/brightness/mic keys with an on-screen bar. Bound to the XF86 keys in niri.
+# Usage: osd volume up|down|mute, osd mic mute, osd brightness up|down
+#
+# The level goes to wob through the FIFO that wob.socket holds open, as
+# "<percent> [muted]" (muted picks the [style.muted] colors in wob.ini).
+
+step=5
+sock=${XDG_RUNTIME_DIR:-/run/user/$UID}/wob.sock
+
+show() { [ -p "$sock" ] && echo "$1" >"$sock"; }
+
+# "Volume: 0.45 [MUTED]" -> "45 muted"
+level() { wpctl get-volume "$1" | awk '{printf "%d%s\n", $2 * 100 + 0.5, ($3 == "[MUTED]" ? " muted" : "")}'; }
+
+sink=@DEFAULT_AUDIO_SINK@
+source=@DEFAULT_AUDIO_SOURCE@
+
+case "$1 $2" in
+    "volume up")     wpctl set-volume "$sink" "$step%+" -l 1.0; show "$(level "$sink")" ;;
+    "volume down")   wpctl set-volume "$sink" "$step%-";        show "$(level "$sink")" ;;
+    "volume mute")   wpctl set-mute "$sink" toggle;             show "$(level "$sink")" ;;
+    "mic mute")      wpctl set-mute "$source" toggle;           show "$(level "$source")" ;;
+    "brightness up")   show "$(brightnessctl -m --class=backlight set "+$step%" | cut -d, -f4 | tr -d %)" ;;
+    "brightness down") show "$(brightnessctl -m --class=backlight set "$step%-" | cut -d, -f4 | tr -d %)" ;;
+    *) echo "usage: osd volume up|down|mute | mic mute | brightness up|down" >&2; exit 1 ;;
+esac

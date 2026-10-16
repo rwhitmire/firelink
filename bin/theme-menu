@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Theme picker (fuzzel). Opened with Mod+Ctrl+Shift+T in niri.
+
+firelink=$(dirname "$(dirname "$(readlink -f "$0")")")
+state=${XDG_STATE_HOME:-$HOME/.local/state}/firelink
+current=$(cat "$state/flavor" 2>/dev/null || echo mocha)
+
+choice=$(for f in latte frappe macchiato mocha; do
+        if [ "$f" = "$current" ]; then echo "$f  ●"; else echo "$f"; fi
+    done | fuzzel --dmenu --prompt "  " --lines 4 --width 22) || exit 0
+
+"$firelink/bin/theme-set" "${choice%% *}"

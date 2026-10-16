@@ -1,0 +1,120 @@
+/* Firelink's waybar style. Don't edit: your ~/.config/waybar/style.css imports
+   theme.css (the Catppuccin colors @base, @text, @blue, ..., from theme-set) and
+   then this file, and anything after that overrides it. */
+
+* {
+    font-family: "Adwaita Sans", "Font Awesome 6 Free", "Font Awesome 6 Brands";
+    font-size: 13px;
+    font-weight: 600;
+    min-height: 0;
+    border: none;
+    border-radius: 0;
+}
+
+window#waybar {
+    background: transparent;
+    color: @text;
+}
+
+tooltip {
+    /* Not fully opaque: otherwise GTK marks the whole popup opaque and
+       niri leaves the rounded corners black */
+    background: alpha(@base, 0.99);
+    border: 1px solid @surface1;
+    border-radius: 10px;
+}
+
+tooltip label {
+    color: @text;
+}
+
+/* Every module sits on its own rounded pill */
+#workspaces,
+#window,
+#clock,
+#tray,
+#privacy,
+#idle_inhibitor,
+#bluetooth,
+#custom-recording,
+#pulseaudio,
+#network,
+#power-profiles-daemon,
+#battery {
+    background: alpha(@mantle, 0.92);
+    border-radius: 12px;
+    padding: 0 14px;
+}
+
+#workspaces {
+    padding: 0 4px;
+}
+
+#workspaces button {
+    color: @overlay0;
+    background: transparent;
+    padding: 0 8px;
+    margin: 4px 1px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+#workspaces button:hover {
+    background: @surface0;
+    color: @text;
+    box-shadow: none;
+    text-shadow: none;
+}
+
+#workspaces button.active {
+    background: @blue;
+    color: @mantle;
+}
+
+#workspaces button.urgent {
+    background: @red;
+    color: @mantle;
+}
+
+#window {
+    color: @subtext0;
+    font-weight: 500;
+}
+
+/* Hide the title pill when no window is focused */
+window#waybar.empty #window {
+    background: transparent;
+}
+
+#clock     { color: @lavender; }
+#idle_inhibitor { color: @overlay0; }
+#idle_inhibitor.activated { color: @yellow; }
+#bluetooth { color: @blue; }
+#bluetooth.off,
+#bluetooth.disabled,
+#bluetooth.no-controller { color: @overlay0; }
+#privacy { color: @peach; }
+#custom-recording {
+    color: @mantle;
+    background: @red;
+}
+#pulseaudio { color: @mauve; }
+#pulseaudio.muted { color: @overlay0; }
+#network   { color: @teal; }
+#network.disconnected { color: @red; }
+#power-profiles-daemon.power-saver { color: @green; }
+#power-profiles-daemon.balanced    { color: @blue; }
+#power-profiles-daemon.performance { color: @peach; }
+#battery   { color: @green; }
+#battery.charging,
+#battery.plugged { color: @green; }
+#battery.warning:not(.charging) { color: @peach; }
+#battery.critical:not(.charging) {
+    color: @mantle;
+    background: @red;
+}
+
+#tray > .needs-attention {
+    background: @red;
+    border-radius: 8px;
+}

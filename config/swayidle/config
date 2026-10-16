@@ -1,0 +1,11 @@
+# Firelink's idle settings. To change them, copy this file to ~/.config/swayidle/config
+# and edit it there; firelink-swayidle uses that instead when it exists.
+
+# Lock at 5 min, screen off at 6 min, suspend at 15 min (only on battery)
+timeout 300 'swaylock -f'
+timeout 360 'niri msg action power-off-monitors'
+timeout 900 'busctl get-property org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower OnBattery | grep -q true && systemctl suspend'
+
+# Lock before suspending (lid close, power menu, etc.) and on `loginctl lock-session`
+before-sleep 'swaylock -f'
+lock 'swaylock -f'

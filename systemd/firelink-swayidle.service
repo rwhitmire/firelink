@@ -1,0 +1,12 @@
+[Unit]
+Description=Idle manager: lock, screen off, suspend (~/.config/swayidle/config, else Firelink's)
+PartOf=graphical-session.target
+After=graphical-session.target
+Requisite=graphical-session.target
+
+[Service]
+ExecStart=/bin/sh -c 'c=$$HOME/.config/swayidle/config; [ -f "$$c" ] || c=$$HOME/.local/share/firelink/config/swayidle/config; exec swayidle -w -C "$$c"'
+Restart=on-failure
+
+[Install]
+WantedBy=niri.service

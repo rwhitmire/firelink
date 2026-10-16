@@ -1,0 +1,12 @@
+[Unit]
+Description=Night light: warm screen colors between sunset and sunrise
+PartOf=graphical-session.target
+After=graphical-session.target
+Requisite=graphical-session.target
+
+[Service]
+ExecStart=/usr/bin/wlsunset -S 07:00 -s 19:30 -t 4000
+Restart=on-failure
+
+[Install]
+WantedBy=niri.service

@@ -1,0 +1,9 @@
+# Wallpapers the palettes use, from github.com/orangci/walls-catppuccin-mocha.
+# That repo has no license, so Firelink doesn't redistribute them: install.sh
+# downloads them into wallpapers/ (gitignored), pinned to this commit and checked
+# by sha256. Without them, the background is the palette's base color.
+# commit 7bfdf10d16ad3a689f9f0cf3a0930da3d1a245a8
+cd562ac9672dde3c23f7cbf9f9a81be1eb7a4aee16f0fbdaae471921e118f95e  dark-forest.jpg
+5e6afa18b89dc01e9b16d69d943966a31465a44e8f34f1bf1800a4ec6fe1ddea  lighthouse.jpg
+3e58afdd268682d141fc5bbb8a5ce378790d2f56c35ef48da0365afe3d3115e2  moon-beach.png
+443b6e220244de01337731e1fe95d98b52dc345812c3559f4c7dc02deebfa652  pink-clouds.jpg

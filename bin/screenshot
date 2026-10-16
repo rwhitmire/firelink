@@ -1,0 +1,35 @@
+#!/bin/bash
+# Capture a screenshot and open it in Satty for annotation.
+# Usage: screenshot [region|output]
+#   region  select an area with slurp (default)
+#   output  capture the focused monitor
+# In Satty: Enter copies to the clipboard and saves to ~/Pictures/Screenshots.
+
+set -euo pipefail
+export PATH="$HOME/.local/bin:$PATH"
+
+mode=${1:-region}
+dir="$HOME/Pictures/Screenshots"
+mkdir -p "$dir"
+
+case "$mode" in
+  region)
+    geom=$(slurp -d) || exit 0 # Esc cancels
+    capture=(grim -g "$geom" -)
+    ;;
+  output)
+    output=$(niri msg -j focused-output | jq -r .name)
+    capture=(grim -o "$output" -)
+    ;;
+  *)
+    echo "usage: screenshot [region|output]" >&2
+    exit 1
+    ;;
+esac
+
+"${capture[@]}" | satty --filename - \
+  --output-filename "$dir/Screenshot from %Y-%m-%d %H-%M-%S.png" \
+  --copy-command wl-copy \
+  --early-exit \
+  --actions-on-enter save-to-clipboard \
+  --save-after-copy

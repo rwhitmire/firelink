@@ -1,0 +1,69 @@
+# Fedora packages Firelink needs, installed by install.sh. One per line; # starts a comment.
+# Only what the desktop needs to work, no other apps. Alacritty is the only terminal.
+
+# Compositor and session
+niri
+xwayland-satellite
+xdg-desktop-portal-gnome
+xdg-desktop-portal-gtk
+gnome-keyring
+mate-polkit
+
+# Bar, launcher, notifications, lock/idle, wallpaper, OSD, night light
+waybar
+fuzzel
+mako
+swaylock
+swayidle
+swaybg
+wob
+wlsunset
+
+# Terminal
+alacritty
+
+# Screenshots and recording (satty is downloaded by install.sh; gtk4/libadwaita are its
+# libraries). screenrecord uses wf-recorder, or gpu-screen-recorder if that Flatpak is installed.
+grim
+slurp
+wf-recorder
+gtk4
+libadwaita
+
+# Clipboard
+wl-clipboard
+cliphist
+
+# Audio, brightness, power, bluetooth, network
+wireplumber
+brightnessctl
+playerctl
+upower
+tuned-ppd
+bluez
+NetworkManager-tui
+
+# Used by the scripts: notifications, JSON, default browser, bluetooth pairing
+libnotify
+jq
+gtk3
+xdg-utils
+gnome-control-center
+curl
+
+# Neovim, plus what plugin managers commonly need to build plugins and parsers
+neovim
+gcc
+make
+unzip
+ripgrep
+fd-find
+tree-sitter-cli
+
+# Fonts
+adwaita-sans-fonts
+fontawesome-6-free-fonts
+fontawesome-6-brands-fonts
+
+# Updates (`firelink update` pulls the repo)
+git

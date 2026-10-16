@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Clipboard history picker (fuzzel). Opened with Mod+Ctrl+V in niri.
+# cliphist.service records everything copied; the chosen entry is copied again.
+
+entry=$(cliphist list | fuzzel --dmenu --with-nth 2 --prompt "  " --width 60) || exit 0
+cliphist decode <<<"$entry" | wl-copy

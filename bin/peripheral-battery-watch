@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# Notify when a wireless keyboard/mouse battery runs low (via UPower).
+# Logitech Bolt/Unifying devices show up in UPower through the kernel's HID++ driver.
+# Started by firelink-battery-watch.service. Warns once per device until it's charged again.
+
+threshold=${1:-20}
+interval=300
+declare -A warned
+
+while true; do
+    for dev in $(upower -e | grep -E '_(keyboard|mouse)_'); do
+        info=$(upower -i "$dev")
+        model=$(awk -F': +' '/model:/ {print $2; exit}' <<<"$info")
+        pct=$(awk -F': +' '/percentage:/ {sub(/%.*/, "", $2); print int($2); exit}' <<<"$info")
+        level=$(awk -F': +' '/battery-level:/ {print $2; exit}' <<<"$info")
+        state=$(awk -F': +' '/state:/ {print $2; exit}' <<<"$info")
+
+        low=0
+        if [[ $state != charging && $state != fully-charged ]]; then
+            [[ -n $pct && $pct -gt 0 && $pct -le $threshold ]] && low=1
+            [[ $level == low || $level == critical ]] && low=1
+        fi
+
+        if (( low )) && [[ -z ${warned[$dev]} ]]; then
+            notify-send -u critical -a "Battery" -i battery-caution-symbolic \
+                "${model:-Device} battery low" "${pct:+$pct% remaining}"
+            warned[$dev]=1
+        elif (( !low )); then
+            unset 'warned[$dev]'
+        fi
+    done
+    sleep "$interval"
+done

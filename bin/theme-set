@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+# Switch the desktop to a Catppuccin flavor: theme-set latte|frappe|macchiato|mocha
+# (also `firelink theme <flavor>`, or Mod+Ctrl+Shift+T for a menu).
+#
+# Renders theme/templates/* with the flavor's palette into each app's config dir
+# (theme.kdl, theme.css, ...), then tells running apps to reload. The user's
+# configs include those files after Firelink's defaults. With no argument,
+# re-applies the current flavor.
+set -euo pipefail
+
+firelink=$(dirname "$(dirname "$(readlink -f "$0")")")
+state=${XDG_STATE_HOME:-$HOME/.local/state}/firelink
+config=${XDG_CONFIG_HOME:-$HOME/.config}
+mkdir -p "$state"
+
+flavor=${1:-$(cat "$state/flavor" 2>/dev/null || echo mocha)}
+palette=$firelink/theme/palettes/$flavor
+if [ ! -f "$palette" ]; then
+    echo "theme-set: unknown flavor '$flavor' (have: $(ls "$firelink/theme/palettes" | tr '\n' ' '))" >&2
+    exit 1
+fi
+
+# template -> destination
+declare -A dest=(
+    [niri.kdl]=$config/niri/theme.kdl
+    [waybar.css]=$config/waybar/theme.css
+    [alacritty.toml]=$config/alacritty/theme.toml
+    [fuzzel.ini]=$config/fuzzel/theme.ini
+    [mako]=$config/mako/theme
+    [swaylock]=$config/swaylock/config
+    [wob.ini]=$config/wob/wob.ini
+)
+
+# Palette lines (key=value) become sed substitutions for {{key}}
+subst=$(sed -nE 's/^([a-z_0-9]+)=(.*)$/s|{{\1}}|\2|g/p' "$palette")
+
+for tpl in "${!dest[@]}"; do
+    out=${dest[$tpl]}
+    mkdir -p "$(dirname "$out")"
+    # Write then rename, so file watchers (niri, alacritty) never see a half-written file
+    sed "$subst" "$firelink/theme/templates/$tpl" > "$out.tmp"
+    mv "$out.tmp" "$out"
+done
+
+echo "$flavor" > "$state/flavor"
+
+get() { sed -nE "s/^$1=//p" "$palette"; }
+
+# Background: the flavor's wallpaper if install.sh downloaded it, else its base color
+wallpaper=$firelink/wallpapers/$(get wallpaper)
+if [ -f "$wallpaper" ]; then
+    ln -sfn "$wallpaper" "$state/wallpaper"
+else
+    rm -f "$state/wallpaper"
+fi
+echo "#$(get base)" > "$state/background"
+
+# Alacritty only watches the files it loaded at startup, so a window opened
+# before theme.toml was imported won't notice it change. Every window watches
+# the main config, and touching it makes alacritty reload (imports included).
+[ -f "$config/alacritty/alacritty.toml" ] && touch "$config/alacritty/alacritty.toml"
+
+# niri watches its config files and reloads on its own.
+# The rest need a nudge; ignore failures for apps that aren't running.
+pkill -USR2 -x waybar || true
+pkill -USR1 -x nvim || true             # an init.lua can listen for SIGUSR1 (see README)
+makoctl reload 2>/dev/null || true
+systemctl --user try-restart firelink-wob.service firelink-swaybg.service 2>/dev/null || true
+gsettings set org.gnome.desktop.interface color-scheme "$(get color_scheme)" 2>/dev/null || true
+
+notify-send -a theme -t 2000 "Theme" "Catppuccin $(get name)" 2>/dev/null || true

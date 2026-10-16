@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# Firelink installer: https://firelink.estuslabs.com
+#
+#   curl -fsSL https://firelink.estuslabs.com/install | bash
+#
+# Clones Firelink into ~/.local/share/firelink (or updates it if it's already
+# there), then runs its install.sh. Read that script first if you like:
+# https://github.com/rwhitmire/firelink/blob/master/install.sh
+#
+# Everything is inside main(), so a partly downloaded script doesn't run.
+
+main() {
+    set -euo pipefail
+    local repo=https://github.com/rwhitmire/firelink.git
+    local dir=$HOME/.local/share/firelink
+
+    if [ "$(id -u)" -eq 0 ]; then
+        echo "firelink: run this as your normal user, not root" >&2
+        exit 1
+    fi
+    if ! grep -q '^ID=fedora$' /etc/os-release 2>/dev/null; then
+        echo "firelink: Firelink is for Fedora" >&2
+        exit 1
+    fi
+
+    if ! command -v git >/dev/null; then
+        echo "firelink: installing git"
+        sudo dnf install -y git </dev/tty
+    fi
+
+    if [ -d "$dir/.git" ]; then
+        echo "firelink: updating $dir"
+        git -C "$dir" pull --ff-only
+    elif [ -e "$dir" ]; then
+        echo "firelink: $dir exists but isn't a Firelink checkout; move it aside and retry" >&2
+        exit 1
+    else
+        echo "firelink: cloning into $dir"
+        git clone --depth 1 "$repo" "$dir"
+    fi
+
+    # This script arrives on stdin, so give the installer the terminal back
+    # for sudo's password prompt
+    exec "$dir/install.sh" </dev/tty
+}
+
+main "$@"

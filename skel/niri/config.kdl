@@ -1,0 +1,14 @@
+// Your niri config. Firelink's defaults come first; anything after this include
+// overrides them (settings merge, and a bind for the same keys replaces Firelink's).
+// Firelink's file: ~/.local/share/firelink/config/niri/firelink.kdl
+include "~/.local/share/firelink/config/niri/firelink.kdl"
+
+// Monitors: niri picks modes and scales itself. To set them, find the names with
+// `niri msg outputs` and add blocks like:
+//
+// output "eDP-1" {
+//     scale 1.25
+//     position x=0 y=0
+// }
+//
+// https://niri-wm.github.io/niri/Configuration:-Outputs

@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# firelink: manage the Firelink desktop.
+#   firelink theme [flavor]   switch Catppuccin flavor (latte, frappe, macchiato,
+#                             mocha); no flavor re-applies the current one
+#   firelink update           pull the latest Firelink and re-run its installer
+#   firelink help
+set -euo pipefail
+
+firelink=$(dirname "$(dirname "$(readlink -f "$0")")")
+
+case "${1:-help}" in
+    theme)
+        shift
+        exec "$firelink/bin/theme-set" "$@"
+        ;;
+    update)
+        if [ -d "$firelink/.git" ]; then
+            git -C "$firelink" pull --ff-only
+        fi
+        exec "$firelink/install.sh"
+        ;;
+    help|-h|--help)
+        sed -n '2,7s/^# \{0,1\}//p' "$0"
+        ;;
+    *)
+        echo "firelink: unknown command '$1' (try: firelink help)" >&2
+        exit 1
+        ;;
+esac

@@ -1,0 +1,4 @@
+# Your mako config. Firelink's defaults (and the theme's colors) come first.
+# Add criteria sections like [app-name=Spotify] after the include. To change a
+# global option, copy ~/.local/share/firelink/config/mako/config here instead.
+include=~/.local/share/firelink/config/mako/config

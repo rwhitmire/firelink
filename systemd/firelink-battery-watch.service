@@ -1,0 +1,12 @@
+[Unit]
+Description=Low-battery alerts for the wireless keyboard/mouse
+PartOf=graphical-session.target
+After=graphical-session.target
+Requisite=graphical-session.target
+
+[Service]
+ExecStart=%h/.local/share/firelink/bin/peripheral-battery-watch
+Restart=on-failure
+
+[Install]
+WantedBy=niri.service

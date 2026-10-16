@@ -1,0 +1,4 @@
+# Your alacritty config. Firelink's defaults (and the theme's colors) are
+# imported first; settings in this file override them.
+[general]
+import = ["~/.local/share/firelink/config/alacritty/alacritty.toml"]

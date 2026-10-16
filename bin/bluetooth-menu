@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# Bluetooth menu (fuzzel). Opened by clicking the bluetooth icon in waybar.
+# Toggles the adapter and connects/disconnects paired devices. Pairing a new
+# device goes through GNOME Settings, which handles PIN prompts.
+
+if bluetoothctl show | grep -q 'Powered: yes'; then
+    power="Turn Bluetooth off"
+    # "Device AA:BB:.. Name" -> "● Name\tAA:BB:.." (● = connected)
+    devices=$(bluetoothctl devices Paired | while read -r _ mac name; do
+        if bluetoothctl info "$mac" | grep -q 'Connected: yes'; then mark="●"; else mark="○"; fi
+        printf '%s %s\t%s\n' "$mark" "$name" "$mac"
+    done)
+else
+    power="Turn Bluetooth on"
+    devices=
+fi
+
+choice=$(printf '%s\n' ${devices:+"$devices"} "$power" "Pair a new device…" |
+    fuzzel --dmenu --with-nth 1 --prompt "  " --width 32) || exit 0
+
+case "$choice" in
+    "Turn Bluetooth off") bluetoothctl power off ;;
+    "Turn Bluetooth on")  bluetoothctl power on ;;
+    "Pair a new device…") XDG_CURRENT_DESKTOP=GNOME gnome-control-center bluetooth ;;
+    "● "*) bluetoothctl disconnect "${choice##*$'\t'}" ;;
+    "○ "*)
+        name=${choice%%$'\t'*}
+        if bluetoothctl connect "${choice##*$'\t'}"; then
+            notify-send -a bluetooth -t 3000 "Connected" "${name#○ }"
+        else
+            notify-send -a bluetooth -t 5000 "Couldn't connect" "${name#○ }"
+        fi
+        ;;
+esac

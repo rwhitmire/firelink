@@ -1,0 +1,6 @@
+// Your waybar config. Firelink's bar is included; keys set here override it
+// (a module list set here replaces Firelink's list).
+// Firelink's file: ~/.local/share/firelink/config/waybar/config.jsonc
+{
+    "include": ["~/.local/share/firelink/config/waybar/config.jsonc"]
+}

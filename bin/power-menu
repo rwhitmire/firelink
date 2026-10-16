@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# Power menu (fuzzel). Opened by clicking the battery in waybar or Mod+Shift+Escape in niri.
+
+options=(Lock Suspend "Log out" Reboot "Shut down")
+
+# Charge limit toggle, only on laptops whose firmware supports it (ThinkPads keep
+# the 80% limit across reboots; UPower toggles it)
+bat=$(upower -e | grep -m1 '/battery_')
+dev=(org.freedesktop.UPower "$bat" org.freedesktop.UPower.Device)
+if [ -n "$bat" ] && [ "$(busctl get-property "${dev[@]}" ChargeThresholdSupported 2>/dev/null)" = "b true" ]; then
+    if [ "$(busctl get-property "${dev[@]}" ChargeThresholdEnabled)" = "b true" ]; then
+        options+=("Charge to 100%")
+    else
+        options+=("Limit charge to 80%")
+    fi
+fi
+
+choice=$(printf '%s\n' "${options[@]}" |
+    fuzzel --dmenu --prompt "⏻  " --lines "${#options[@]}" --width 22)
+
+case "$choice" in
+    Lock)        loginctl lock-session ;;   # swayidle's `lock` handler runs swaylock
+    Suspend)     systemctl suspend ;;       # swayidle locks before sleep
+    "Log out")   niri msg action quit --skip-confirmation ;;
+    Reboot)      systemctl reboot ;;
+    "Shut down") systemctl poweroff ;;
+    "Charge to 100%")      busctl call "${dev[@]}" EnableChargeThreshold b false ;;
+    "Limit charge to 80%") busctl call "${dev[@]}" EnableChargeThreshold b true ;;
+esac
