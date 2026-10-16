@@ -1,6 +1,6 @@
 # Fedora packages Firelink needs, installed by install.sh. One per line; # starts a comment.
-# Only what the desktop needs to work, no other apps. Alacritty is the only terminal and
-# Nautilus the only file manager.
+# Only what the desktop needs to work, no other apps. Alacritty is the only terminal,
+# Nautilus the only file manager and Firefox the only browser.
 # Complete on its own (Fedora Server or a minimal install), so it lists what Workstation
 # would otherwise provide, even what usually comes in as a weak dependency. The login
 # screen (greetd) is installed separately, only on machines without one.
@@ -27,6 +27,11 @@ wlsunset
 # Terminal and file manager (the same one Omarchy uses; already there on Workstation)
 alacritty
 nautilus
+
+# A browser, so links and Mod+B work and there's a way to download another one.
+# Fedora's default, already there on Workstation; Firefox is the default until the
+# user picks another (Browser in the Firelink menu, or the browser's own prompt)
+firefox
 
 # Screenshots and recording (satty is downloaded by install.sh; gtk4/libadwaita are its
 # libraries). screenrecord uses wf-recorder, or gpu-screen-recorder if that Flatpak is installed.

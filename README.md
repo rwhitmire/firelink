@@ -26,8 +26,8 @@ That clones this repo into `~/.local/share/firelink` and runs `install.sh`, whic
    in a VM, its guest agent, so the screen follows the VM window's size (its
    per-session part stays off in niri, where it puts the pointer in the wrong
    place).
-   Alacritty is the terminal and Nautilus the file manager (**Mod+E**); no
-   other apps are installed.
+   Alacritty is the terminal, Nautilus the file manager (**Mod+E**) and
+   Firefox the browser (**Mod+B**); no other apps are installed.
 2. sets up a login screen if the machine has none (Server, minimal): greetd with
    tuigreet, which starts niri. GDM or another display manager is kept as is.
    This and the packages are the only steps that use sudo.
@@ -48,7 +48,10 @@ skips what's already done.
 
 - **Mod+Space** (or the Fedora logo in the bar) opens the Firelink menu: apps,
   screenshots and recording, toggles for do not disturb, night light and the
-  bar, theme, clipboard, Wi-Fi, Bluetooth, keybinds, update and power
+  bar, theme, clipboard, Wi-Fi, Bluetooth, default browser, keybinds, update
+  and power
+- **Browser** in the Firelink menu lists the browsers you have installed and
+  makes the one you pick the default, for links and **Mod+B**
 - Click the network in the bar for the Wi-Fi menu (nearby networks, passwords
   asked in fuzzel; hidden and enterprise networks and VPNs open
   nm-connection-editor), or the Bluetooth icon to connect and pair devices

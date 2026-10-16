@@ -341,16 +341,17 @@
 
     <section>
       <h2><span class="n">01</span> What it installs</h2>
-      <p>Only what the desktop needs. Packages come from Fedora's own repositories, and <code>sudo</code> is only used to install them (and to set up a login screen on machines without one). It works on Workstation, a spin or a bare Server install; GNOME isn't needed. No browsers, chat apps or anything else you didn't ask for.</p>
+      <p>Only what the desktop needs. Packages come from Fedora's own repositories, and <code>sudo</code> is only used to install them (and to set up a login screen on machines without one). It works on Workstation, a spin or a bare Server install; GNOME isn't needed. Beyond Firefox, no browsers, chat apps or anything else you didn't ask for.</p>
       <ul class="parts">
         <li><b>niri</b><span>The compositor. Scrolling tiling, an overview, gestures.</span></li>
         <li><b>Waybar</b><span>Workspaces, clock, audio, network, Bluetooth, battery.</span></li>
-        <li><b>fuzzel</b><span>The app launcher and one menu for everything else: capture, toggles, theme, Wi-Fi, Bluetooth, power.</span></li>
+        <li><b>fuzzel</b><span>The app launcher and one menu for everything else: capture, toggles, theme, Wi-Fi, Bluetooth, default browser, power.</span></li>
         <li><b>mako, wob</b><span>Notifications with do not disturb, and a slim bar for volume and brightness.</span></li>
         <li><b>swaylock, swayidle</b><span>Locks after five minutes; suspends on battery.</span></li>
         <li><b>Satty</b><span>Screenshots you can annotate, plus screen recording.</span></li>
         <li><b>Alacritty, Neovim</b><span>The terminal and the editor.</span></li>
         <li><b>Nautilus</b><span>The file manager, on <kbd>Super</kbd><kbd>E</kbd>.</span></li>
+        <li><b>Firefox</b><span>A browser to start with, on <kbd>Super</kbd><kbd>B</kbd>. Use it to get another.</span></li>
         <li><b>cliphist, wlsunset</b><span>Clipboard history and a night light.</span></li>
       </ul>
       <p>Satty and the wallpapers are downloaded at fixed versions and checked against known hashes. If GNOME is installed too, it's left alone: Firelink's services only run in a niri session.</p>
@@ -445,6 +446,11 @@
 cp ~/Pictures/mine.jpg ~/.config/firelink/wallpaper
 systemctl --user restart firelink-swaybg</pre>
       <p>Delete that file and run the last line again to go back to the flavor's wallpaper.</p>
+
+      <h3 id="browser">Browser</h3>
+      <p>Firefox comes with Firelink and opens on <kbd>Super</kbd><kbd>B</kbd>. To use another browser, install it from its own site (Chrome and Brave have Fedora instructions) or from Flathub, then pick it under <b>Browser</b> in the Firelink menu, on <kbd>Super</kbd><kbd>Space</kbd>. Links and <kbd>Super</kbd><kbd>B</kbd> open it from then on. Saying yes when a browser asks to be the default does the same thing. From a terminal:</p>
+      <pre class="config">xdg-settings get default-web-browser
+xdg-settings set default-web-browser brave-browser.desktop</pre>
     </section>
   </main>
 

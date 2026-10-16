@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# Default browser picker (fuzzel): lists the installed apps that open web links
+# and makes the chosen one the default, for links and Mod+B. Opened from the
+# Firelink menu (Mod+Space).
+
+current=$(xdg-settings get default-web-browser 2>/dev/null)
+
+# id<TAB>name<TAB>hidden for every app that handles https links, in XDG_DATA_DIRS
+# order so a user's or Flatpak's copy of an id shadows the system one, as it
+# does for xdg-open. Only the [Desktop Entry] group counts (actions have names too).
+list() {
+    local IFS=: dir f
+    for dir in ${XDG_DATA_HOME:-$HOME/.local/share}:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}; do
+        for f in "$dir"/applications/*.desktop; do
+            [ -f "$f" ] || continue
+            awk -v id="${f##*/}" '
+                /^\[/ { main = ($0 == "[Desktop Entry]"); next }
+                !main { next }
+                /^Name=/ && name == "" { name = substr($0, 6) }
+                /^Type=/ { app = ($0 == "Type=Application") }
+                /^MimeType=/ && /[=;]x-scheme-handler\/https(;|$)/ { web = 1 }
+                /^(NoDisplay|Hidden)=true/ { hide = 1 }
+                END { if (web) printf "%s\t%s\t%d\n", id, name, (hide || !app) }
+            ' "$f"
+        done
+    done
+}
+
+declare -A ids
+labels=()
+while IFS=$'\t' read -r id name hidden; do
+    [ "$hidden" = 0 ] || continue
+    # Two of the same browser (an RPM and a Flatpak) are told apart by their ids
+    label=$name
+    [ -n "${ids[$label]}" ] && label="$name ($id)"
+    ids[$label]=$id
+    labels+=("$label")
+done < <(list | awk -F'\t' '!seen[$1]++')
+
+if [ ${#labels[@]} -eq 0 ]; then
+    notify-send -i web-browser "No browsers installed"
+    exit 1
+fi
+
+choice=$(for label in "${labels[@]}"; do
+        if [ "${ids[$label]}" = "$current" ]; then echo "$label  ●"; else echo "$label"; fi
+    done | fuzzel --dmenu --prompt "  " --lines "${#labels[@]}" --width 30) || exit 0
+choice=${choice%  ●}
+
+# Writes text/html and the http(s) handlers to ~/.config/mimeapps.list
+xdg-settings set default-web-browser "${ids[$choice]}" &&
+    notify-send -i web-browser "Default browser" "$choice"

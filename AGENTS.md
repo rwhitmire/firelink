@@ -19,7 +19,7 @@ user-facing description; this file is what an agent needs to change it safely.
   editing `skel/` (existing users never get it); change `config/` instead.
 - `bin/` has the scripts the binds, bar and units call: `menu` (the Firelink
   menu, Mod+Space), `theme-set`, `theme-menu`, `wallpaper`, `osd`,
-  `clipboard-menu`, `wifi-menu`, `bluetooth-menu`, `power-menu`, `dnd`, `updates`, `screenshot`,
+  `clipboard-menu`, `wifi-menu`, `bluetooth-menu`, `browser-menu`, `power-menu`, `dnd`, `updates`, `screenshot`,
   `screenrecord`, `peripheral-battery-watch`. A new menu belongs in `menu` too.
 - `systemd/` has the units, named `firelink-*`, `WantedBy=niri.service`.
   `install.sh` copies them (never links: `systemctl disable` deletes a linked
@@ -37,9 +37,12 @@ user-facing description; this file is what an agent needs to change it safely.
 
 ## Rules
 
-- **Only what the desktop needs to work.** No other apps (no browsers, chat,
-  music, games, Flatpaks), not even as an opt-in. Alacritty is the only
-  terminal and Nautilus the only file manager; don't add or reference others. Neovim and its build tools stay.
+- **Only what the desktop needs to work.** No other apps (no chat, music,
+  games, Flatpaks), not even as an opt-in. Alacritty is the only terminal,
+  Nautilus the only file manager and Firefox the only browser; don't add or
+  reference others. Firefox is there so links work and users can download
+  another browser; `browser-menu` picks among whatever is installed, but
+  Firelink never installs one. Neovim and its build tools stay.
 - **Never overwrite a user's file in `~/.config`.** `install.sh` creates
   `skel/` files only when missing. Generated theme files (`theme.kdl`,
   `theme.css`, `theme.toml`, `theme.ini`, mako's `theme`, `wob.ini`, swaylock's
