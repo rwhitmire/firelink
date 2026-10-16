@@ -93,9 +93,11 @@ GNOME login on the same machine is left alone). Waybar and mako use Fedora's uni
 
 ## Website
 
-`site/` is the static site at firelink.estuslabs.com, deployed by Cloudflare
-Pages (build output directory `site`, no build command). `site/install` is the
-bootstrap script that `curl … | bash` runs.
+`site/` is the static site at firelink.estuslabs.com, served by a Cloudflare
+Worker with static assets (`wrangler.jsonc`; no code and no build step).
+`site/install` is the bootstrap script that `curl … | bash` runs, and
+`site/_headers` serves it as uncached plain text. Preview locally with
+`npx wrangler dev`.
 
 ## Credits
 

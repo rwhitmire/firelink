@@ -1,0 +1,9 @@
+// Cloudflare Workers config for the website: serve site/ as static files
+// (index.html, the install bootstrap, and _headers). No code, no build step.
+{
+  "name": "firelink",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./site"
+  }
+}

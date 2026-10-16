@@ -1,4 +1,4 @@
-# Cloudflare Pages: serve the installer as text, so it shows in a browser
+# Cloudflare static assets: serve the installer as text, so it shows in a browser
 # instead of downloading, and never cache it
 /install
   Content-Type: text/plain; charset=utf-8

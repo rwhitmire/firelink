@@ -26,7 +26,9 @@ user-facing description; this file is what an agent needs to change it safely.
   niri spawns nothing at startup, so add new daemons as units here.
 - `theme/palettes/`, `theme/templates/`, `theme/wallpapers.txt`: see Theme below.
 - `packages/dnf.txt`: the Fedora packages `install.sh` installs.
-- `site/`: the static website (Cloudflare Pages, output dir `site`, no build).
+- `site/`: the static website, served by a Cloudflare Worker with static assets
+  (`wrangler.jsonc` points it at `site/`; no build step). Preview with
+  `npx wrangler dev`.
 
 ## Rules
 
@@ -68,7 +70,8 @@ user-facing description; this file is what an agent needs to change it safely.
   everything, it shouldn't prompt for sudo or create/change anything but the
   copied units and theme files.
 - New packages: `dnf repoquery --available <name>` before adding them.
-- Site: render it with
+- Site: `npx wrangler dev`, then check `/install` comes back as `text/plain`.
+  Render it with
   `firefox --headless --no-remote --profile <empty dir> --window-size=1280,2400 --screenshot out.png file://$PWD/site/index.html`,
   and again at `--window-size=390,1800` for phones; no horizontal overflow.
 

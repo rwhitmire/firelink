@@ -1,2 +1,5 @@
 # Downloaded by install.sh (see theme/wallpapers.txt)
 wallpapers/
+
+# wrangler dev cache
+.wrangler/
