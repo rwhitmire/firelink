@@ -11,6 +11,10 @@ An [Estus Labs](https://estuslabs.com) project. Site: https://firelink.estuslabs
 
 On Fedora 44, as your normal user. Workstation, a spin or a bare Server or
 minimal install all work: GNOME isn't needed, and if it's there it's left alone.
+For a new machine, the site has
+[steps for starting from scratch](https://firelink.estuslabs.com/#scratch):
+Workstation if you want GNOME too, or the Everything netinstall with Minimal
+Install for niri alone.
 
 ```bash
 curl -fsSL https://firelink.estuslabs.com/install | bash

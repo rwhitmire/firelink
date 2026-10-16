@@ -165,6 +165,10 @@
     .parts span { color: var(--overlay2); font-size: 16px; }
 
     /* Keys */
+    .steps { margin: 8px 0 16px; padding-left: 1.6em; }
+    .steps li { margin: 0 0 10px; padding-left: 6px; }
+    .steps li::marker { color: var(--peach); font: 500 15px var(--mono); }
+    .note { font-size: 16px; color: var(--overlay2); }
     .keys { width: 100%; border-collapse: collapse; margin: 8px 0; }
     .keys td { padding: 9px 0; border-bottom: 1px solid var(--surface0); vertical-align: middle; }
     .keys td:first-child { width: 1%; white-space: nowrap; padding-right: 28px; }
@@ -263,7 +267,7 @@
         <div class="term-bar"><span>Fedora 44</span><button type="button" id="copy">Copy</button></div>
         <pre><span class="p">$ </span>curl -fsSL https://firelink.estuslabs.com/install | bash</pre>
       </div>
-      <p class="after">Then log out and pick Niri on the login screen. <a href="/install">Read the script</a> first if you like; it's short.</p>
+      <p class="after">Then log out and pick Niri on the login screen. <a href="/install">Read the script</a> first if you like; it's short. New machine? <a href="#scratch">Start from scratch</a>.</p>
     </div>
 
     <figure class="shot">
@@ -350,8 +354,26 @@
       <p>Satty and the wallpapers are downloaded at fixed versions and checked against known hashes. If GNOME is installed too, it's left alone: Firelink's services only run in a niri session.</p>
     </section>
 
+    <section id="scratch">
+      <h2><span class="n">02</span> Starting from scratch</h2>
+      <p>Firelink installs on any Fedora 44. On a new machine or a VM, there are two good places to start:</p>
+      <ul class="parts">
+        <li><b>Workstation</b><span>Fedora's GNOME desktop. Firelink adds niri alongside it and uses GNOME's login screen, where you pick either one. Easiest if you'd like GNOME around too.</span></li>
+        <li><b>Everything netinstall</b><span>A bare system with no desktop. Firelink brings the rest, including a login screen, so you get niri and nothing else. Smaller, and up to date from the start.</span></li>
+      </ul>
+      <p>From Workstation, install it as usual and run the command above. From the Everything netinstall:</p>
+      <ol class="steps">
+        <li>Download the <a href="https://fedoraproject.org/misc/#everything">Everything netinstall ISO</a> (under 1&nbsp;GB) and write it to a USB stick with Fedora Media Writer, or boot it in a VM.</li>
+        <li>In the installer, under <b>Software Selection</b>, choose <b>Minimal Install</b>. Packages download during the install, so connect to a network.</li>
+        <li>Under <b>User Creation</b>, make your user and tick <b>Make this user administrator</b> so it can use <code>sudo</code>.</li>
+        <li>Reboot, log in at the text console, and run the install command.</li>
+        <li>Reboot again. Firelink's login screen comes up; log in and niri starts.</li>
+      </ol>
+      <p class="note">In a VM, turn on 3D acceleration: niri needs working graphics.</p>
+    </section>
+
     <section id="keys">
-      <h2><span class="n">02</span> Keys</h2>
+      <h2><span class="n">03</span> Keys</h2>
       <table class="keys">
         <tr><td><kbd>Super</kbd><kbd>T</kbd></td><td>Terminal</td></tr>
         <tr><td><kbd>Super</kbd><kbd>D</kbd></td><td>Launch an app</td></tr>
@@ -369,7 +391,7 @@
     </section>
 
     <section id="themes">
-      <h2><span class="n">03</span> Themes</h2>
+      <h2><span class="n">04</span> Themes</h2>
       <p>Everything follows one of Catppuccin's four flavors: window borders, the bar, menus, notifications, the lock screen, the terminal and the wallpaper. Switch with <kbd>Super</kbd><kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>T</kbd> or <code>firelink theme latte</code>.</p>
       <div class="flavors">
         <div class="flavor">
@@ -392,7 +414,7 @@
     </section>
 
     <section>
-      <h2><span class="n">04</span> Making it yours</h2>
+      <h2><span class="n">05</span> Making it yours</h2>
       <p>Firelink keeps its defaults in <code>~/.local/share/firelink</code>. Your files in <code>~/.config</code> include them, and anything you add after that wins. <code>firelink update</code> brings in new defaults and never touches your files; an icon in the bar tells you when there's one.</p>
       <pre class="config"><span class="c">// ~/.config/niri/config.kdl</span>
 <span class="k">include</span> <span class="s">"~/.local/share/firelink/config/niri/firelink.kdl"</span>
