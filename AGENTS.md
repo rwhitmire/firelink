@@ -37,7 +37,7 @@ user-facing description; this file is what an agent needs to change it safely.
 
 - **Only what the desktop needs to work.** No other apps (no browsers, chat,
   music, games, Flatpaks), not even as an opt-in. Alacritty is the only
-  terminal; don't add or reference another one. Neovim and its build tools stay.
+  terminal and Nautilus the only file manager; don't add or reference others. Neovim and its build tools stay.
 - **Never overwrite a user's file in `~/.config`.** `install.sh` creates
   `skel/` files only when missing. Generated theme files (`theme.kdl`,
   `theme.css`, `theme.toml`, `theme.ini`, mako's `theme`, `wob.ini`, swaylock's
@@ -57,7 +57,7 @@ user-facing description; this file is what an agent needs to change it safely.
   `niri.service`, never `graphical-session.target`. Firelink must work on a bare
   Fedora Server or minimal install, so `packages/dnf.txt` lists everything
   (even what's usually a weak dependency) and nothing from the GNOME desktop
-  (no `gnome-control-center`). If GNOME is installed, leave its login screen and
+  (no `gnome-control-center`; Nautilus, the file manager, is the exception). If GNOME is installed, leave its login screen and
   settings alone.
 - **Clean up after yourself with a migration.** When a change leaves something
   behind on existing installs (a renamed or removed unit, a moved state file, a

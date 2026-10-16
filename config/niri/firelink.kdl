@@ -340,6 +340,7 @@ binds {
     // Suggested binds for running programs: terminal, app launcher, screen locker.
     Mod+T hotkey-overlay-title="Open a Terminal: alacritty" { spawn "alacritty"; }
     Mod+D hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel"; }
+    Mod+E hotkey-overlay-title="Open Files: nautilus" { spawn "nautilus" "--new-window"; }
     Mod+B hotkey-overlay-title="Open the Default Browser" { spawn-sh "gtk-launch \"$(xdg-settings get default-web-browser)\""; }
     Super+Alt+L hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
     Mod+Space hotkey-overlay-title="Firelink Menu" { spawn-sh "~/.local/share/firelink/bin/menu"; }

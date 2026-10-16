@@ -24,7 +24,8 @@ That clones this repo into `~/.local/share/firelink` and runs `install.sh`, whic
 
 1. installs the Fedora packages in `packages/dnf.txt` that are missing, plus,
    in a VM, its guest agent, so the screen follows the VM window's size.
-   Alacritty is the only terminal, and no other apps are installed.
+   Alacritty is the terminal and Nautilus the file manager (**Mod+E**); no
+   other apps are installed.
 2. sets up a login screen if the machine has none (Server, minimal): greetd with
    tuigreet, which starts niri. GDM or another display manager is kept as is.
    This and the packages are the only steps that use sudo.
