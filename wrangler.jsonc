@@ -6,6 +6,11 @@
   "assets": {
     "directory": "./site"
   },
+  // Gives each preview a workers.dev URL to look at
+  "preview_urls": true,
+  // Lets the PR builds run `wrangler preview`; empty means previews use
+  // the settings above
+  "previews": {},
   // Deploying attaches firelink.estuslabs.com and creates its DNS record
   "routes": [
     { "pattern": "firelink.estuslabs.com", "custom_domain": true }
