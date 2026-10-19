@@ -125,6 +125,7 @@ GNOME login on the same machine is left alone). Waybar and mako use Fedora's uni
 | `firelink-wlsunset` | night light, 4000K from 19:30 to 07:00 |
 | `firelink-wob.socket` | volume/brightness OSD |
 | `firelink-battery-watch` | low-battery alerts for wireless keyboards and mice |
+| `firelink-waybar-resume` | restarts waybar after resume, which waybar 0.15 can hang on |
 | `firelink-update-check.timer` | `git fetch` 2 minutes after login and every 6 hours; shows the update icon |
 
 ## Website

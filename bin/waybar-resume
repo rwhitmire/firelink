@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Restart waybar after every resume from suspend. Waybar 0.15 can hang for good
+# when an output comes back during resume (Alexays/Waybar#4393): the bar
+# freezes with stale contents (e.g. "offline") and ignores SIGUSR2, so only a
+# restart brings it back. Started by firelink-waybar-resume.service.
+
+gdbus monitor --system --dest org.freedesktop.login1 --object-path /org/freedesktop/login1 |
+while read -r line; do
+    [[ $line == *PrepareForSleep*false* ]] || continue
+    # Outputs reappear over the first few seconds after resume
+    sleep 5
+    systemctl --user try-restart waybar.service
+done

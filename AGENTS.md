@@ -20,7 +20,7 @@ user-facing description; this file is what an agent needs to change it safely.
 - `bin/` has the scripts the binds, bar and units call: `menu` (the Firelink
   menu, Mod+Space), `theme-set`, `theme-menu`, `wallpaper`, `osd`,
   `clipboard-menu`, `wifi-menu`, `bluetooth-menu`, `browser-menu`, `power-menu`, `dnd`, `updates`, `screenshot`,
-  `screenrecord`, `peripheral-battery-watch`. A new menu belongs in `menu` too.
+  `screenrecord`, `peripheral-battery-watch`, `waybar-resume`. A new menu belongs in `menu` too.
 - `systemd/` has the units, named `firelink-*`, `WantedBy=niri.service`.
   `install.sh` copies them (never links: `systemctl disable` deletes a linked
   unit file) and attaches Fedora's waybar and mako units with `add-wants`.

@@ -1,0 +1,12 @@
+[Unit]
+Description=Restart waybar after resume (works around a waybar hang)
+PartOf=graphical-session.target
+After=graphical-session.target
+Requisite=graphical-session.target
+
+[Service]
+ExecStart=%h/.local/share/firelink/bin/waybar-resume
+Restart=on-failure
+
+[Install]
+WantedBy=niri.service
