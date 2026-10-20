@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # firelink: manage the Firelink desktop.
-#   firelink theme [flavor]   switch Catppuccin flavor (latte, frappe, macchiato,
-#                             mocha); no flavor re-applies the current one
+#   firelink theme [flavor]   switch theme (latte, frappe, macchiato, mocha,
+#                             tokyonight, gruvbox-light, gruvbox-dark); no
+#                             flavor re-applies the current one
 #   firelink update [--force] pull the latest Firelink and run its installer, if
 #                             there's anything new (--force runs it regardless)
 #   firelink help

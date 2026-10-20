@@ -51,8 +51,8 @@ user-facing description; this file is what an agent needs to change it safely.
   `firelink theme`; never edit the generated copy. To theme a new app, add a
   template and an entry in `theme-set`'s `dest` map, and include the generated
   file from the app's `config/` defaults (after the defaults, so it wins).
-- **Wallpapers aren't redistributed** (their repo has no license).
-  `theme/wallpapers.txt` pins them by commit and sha256; `install.sh` downloads
+- **Wallpapers aren't redistributed** (not all their repos have a license).
+  `theme/wallpapers.txt` pins each by a commit URL and sha256; `install.sh` downloads
   them into the gitignored `wallpapers/`. Without one, `bin/wallpaper` uses the
   palette's base color.
 - **Keep it hardware-agnostic.** No hard-coded batteries, AC adapters, output

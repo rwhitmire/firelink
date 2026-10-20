@@ -27,9 +27,9 @@ mantle=292c3c
 crust=232634
 
 # Non-color settings
-name=Frappe
+name=Catppuccin Frappe
 color_scheme=prefer-dark
-wallpaper=horizon.jpg
+wallpaper=forest-peak.png
 
 # Terminal black/white slots (Latte swaps them so text stays readable on a light background)
 ansi_black=51576d

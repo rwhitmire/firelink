@@ -27,9 +27,9 @@ mantle=e6e9ef
 crust=dce0e8
 
 # Non-color settings
-name=Latte
+name=Catppuccin Latte
 color_scheme=prefer-light
-wallpaper=pink-clouds.jpg
+wallpaper=clear-day.jpg
 
 # Terminal black/white slots (Latte swaps them so text stays readable on a light background)
 ansi_black=5c5f77

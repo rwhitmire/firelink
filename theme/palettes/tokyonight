@@ -1,0 +1,40 @@
+# Tokyo Night — the colors of Omarchy's tokyo-night theme (themes/tokyo-night/colors.toml
+# in omacom/omarchy), on Catppuccin's slot names so the templates work unchanged.
+# Hex values without '#'.
+rosewater=c0caf5
+flamingo=ff7a93
+pink=ad8ee6
+mauve=bb9af7
+red=f7768e
+maroon=ff7a93
+peach=ff9e64
+yellow=e0af68
+green=9ece6a
+teal=449dab
+sky=0db9d7
+sapphire=0db9d7
+blue=7aa2f7
+lavender=7aa2f7
+text=a9b1d6
+subtext1=9aa5ce
+subtext0=787c99
+overlay2=737aa2
+overlay1=565f89
+overlay0=545c7e
+surface2=414868
+surface1=3b4261
+surface0=292e42
+base=1a1b26
+mantle=13141c
+crust=0e0e14
+
+# Non-color settings
+name=Tokyo Night
+color_scheme=prefer-dark
+wallpaper=winding-road.jpg
+
+# Terminal black/white slots, as Omarchy's terminal template fills them
+ansi_black=1a1b26
+ansi_white=a9b1d6
+ansi_bright_black=414868
+ansi_bright_white=c0caf5

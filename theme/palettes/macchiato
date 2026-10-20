@@ -27,9 +27,9 @@ mantle=1e2030
 crust=181926
 
 # Non-color settings
-name=Macchiato
+name=Catppuccin Macchiato
 color_scheme=prefer-dark
-wallpaper=serenity.jpg
+wallpaper=shaded-landscape.png
 
 # Terminal black/white slots (Latte swaps them so text stays readable on a light background)
 ansi_black=494d64

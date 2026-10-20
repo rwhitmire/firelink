@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Switch the desktop to a Catppuccin flavor: theme-set latte|frappe|macchiato|mocha
-# (also `firelink theme <flavor>`, or Mod+Ctrl+Shift+T for a menu).
+# Switch the desktop's theme: theme-set <flavor>, one of theme/palettes/ (the
+# Catppuccin, Tokyo Night and Gruvbox variants; also `firelink theme <flavor>`,
+# or Mod+Ctrl+Shift+T for a menu).
 #
 # Renders theme/templates/* with the flavor's palette into each app's config dir
 # (theme.kdl, theme.css, ...), then tells running apps to reload. The user's
@@ -46,7 +47,8 @@ echo "$flavor" > "$state/flavor"
 
 get() { sed -nE "s/^$1=//p" "$palette"; }
 
-# Background: the flavor's wallpaper if install.sh downloaded it, else its base color
+# Background: the flavor's wallpaper if it has one and install.sh downloaded it,
+# else its base color
 wallpaper=$firelink/wallpapers/$(get wallpaper)
 if [ -f "$wallpaper" ]; then
     ln -sfn "$wallpaper" "$state/wallpaper"
@@ -68,4 +70,4 @@ makoctl reload 2>/dev/null || true
 systemctl --user try-restart firelink-wob.service firelink-swaybg.service 2>/dev/null || true
 gsettings set org.gnome.desktop.interface color-scheme "$(get color_scheme)" 2>/dev/null || true
 
-notify-send -a theme -t 2000 "Theme" "Catppuccin $(get name)" 2>/dev/null || true
+notify-send -a theme -t 2000 "Theme" "$(get name)" 2>/dev/null || true

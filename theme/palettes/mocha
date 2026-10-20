@@ -27,9 +27,9 @@ mantle=181825
 crust=11111b
 
 # Non-color settings
-name=Mocha
+name=Catppuccin Mocha
 color_scheme=prefer-dark
-wallpaper=dark-forest.jpg
+wallpaper=clouds-night.jpg
 
 # Terminal black/white slots (Latte swaps them so text stays readable on a light background)
 ansi_black=45475a

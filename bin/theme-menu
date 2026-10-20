@@ -1,12 +1,17 @@
 #!/usr/bin/env bash
-# Theme picker (fuzzel). Opened with Mod+Ctrl+Shift+T in niri.
+# Theme picker (fuzzel). Opened with Mod+Ctrl+Shift+T in niri, or Theme in the
+# Firelink menu.
 
 firelink=$(dirname "$(dirname "$(readlink -f "$0")")")
 state=${XDG_STATE_HOME:-$HOME/.local/state}/firelink
 current=$(cat "$state/flavor" 2>/dev/null || echo mocha)
 
-choice=$(for f in latte frappe macchiato mocha; do
-        if [ "$f" = "$current" ]; then echo "$f  ●"; else echo "$f"; fi
-    done | fuzzel --dmenu --prompt "  " --lines 4 --width 22) || exit 0
+# Grouped by family, light to dark
+flavors=(latte frappe macchiato mocha tokyonight gruvbox-light gruvbox-dark)
 
-"$firelink/bin/theme-set" "${choice%% *}"
+i=$(for f in "${flavors[@]}"; do
+        name=$(sed -nE 's/^name=//p' "$firelink/theme/palettes/$f")
+        if [ "$f" = "$current" ]; then echo "$name  ●"; else echo "$name"; fi
+    done | fuzzel --dmenu --index --prompt "  " --lines ${#flavors[@]} --width 26) || exit 0
+
+"$firelink/bin/theme-set" "${flavors[$i]}"

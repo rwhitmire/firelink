@@ -3,7 +3,9 @@
 A scrollable-tiling desktop for Fedora, built on [niri](https://github.com/YaLTeR/niri):
 Waybar, fuzzel menus, mako, swaylock/swayidle, a volume/brightness OSD, clipboard
 history, night light, screenshots and recording, all themed with one
-[Catppuccin](https://catppuccin.com) flavor you can switch at any time.
+theme you can switch at any time: the four [Catppuccin](https://catppuccin.com)
+flavors, [Tokyo Night](https://github.com/folke/tokyonight.nvim) (as
+[Omarchy](https://omarchy.org) has it) or [Gruvbox](https://github.com/morhetz/gruvbox) (Light, Dark).
 
 An [Estus Labs](https://estuslabs.com) project. Site: https://firelink.estuslabs.com
 
@@ -59,8 +61,8 @@ skips what's already done.
 - **Mod+N** dismisses the latest notification, **Mod+Shift+N** all of them, and
   **Mod+Ctrl+N** toggles do not disturb (only critical notifications show until
   it's off; click the bell in the bar to turn it off)
-- `firelink theme [latte|frappe|macchiato|mocha]` switches the flavor
-  (or **Mod+Ctrl+Shift+T**)
+- `firelink theme [latte|frappe|macchiato|mocha|tokyonight|gruvbox-light|gruvbox-dark]`
+  switches the theme (or **Mod+Ctrl+Shift+T**)
 - `firelink update` pulls the latest Firelink and re-runs the installer, or
   says it's up to date when there's nothing new (`--force` re-runs it anyway,
   to repair an install). When there's an update, an icon shows in the bar (its
@@ -91,7 +93,10 @@ site has [guides for both](https://firelink.estuslabs.com/#displays).
 
 ## Theme
 
-Colors come from `theme/palettes/<flavor>`. `theme/templates/` holds the color
+Colors come from `theme/palettes/<flavor>`. Every palette uses Catppuccin's
+slot names (`base`, `surface0`, `lavender`, ...), so Tokyo Night and Gruvbox map
+their colors onto those. Each palette names its wallpaper, listed in
+`theme/wallpapers.txt` with its source. `theme/templates/` holds the color
 part of each app's config with `{{color}}` placeholders; `bin/theme-set` renders
 them into `~/.config/<app>/theme.*` (included after Firelink's defaults), sets the
 wallpaper and GTK's light/dark preference, and reloads what's running. The
@@ -101,10 +106,19 @@ Neovim isn't themed by Firelink, but `theme-set` sends running instances SIGUSR1
 so an `init.lua` can follow along:
 
 ```lua
+-- needs catppuccin/nvim, folke/tokyonight.nvim and ellisonleao/gruvbox.nvim
 local function apply_theme()
   local f = io.open(vim.fn.expand '~/.local/state/firelink/flavor')
-  vim.cmd.colorscheme('catppuccin-' .. (f and f:read '*l' or 'mocha'))
+  local flavor = f and f:read '*l' or 'mocha'
   if f then f:close() end
+  if flavor:match '^gruvbox' then
+    vim.o.background = flavor:match 'light' and 'light' or 'dark'
+    vim.cmd.colorscheme 'gruvbox'
+  elseif flavor == 'tokyonight' then
+    vim.cmd.colorscheme 'tokyonight-night'
+  else
+    vim.cmd.colorscheme('catppuccin-' .. flavor)
+  end
 end
 apply_theme()
 vim.api.nvim_create_autocmd('Signal', { pattern = 'SIGUSR1', callback = vim.schedule_wrap(apply_theme) })
@@ -138,5 +152,9 @@ Worker with static assets (`wrangler.jsonc`; no code and no build step).
 
 ## Credits
 
-Wallpapers by [orangc](https://github.com/orangci/walls-catppuccin-mocha),
-downloaded at install time. Colors by [Catppuccin](https://catppuccin.com).
+Wallpapers from [zhichaoh/catppuccin-wallpapers](https://github.com/zhichaoh/catppuccin-wallpapers),
+[Omarchy](https://github.com/omacom/omarchy) and
+[AngelJumbo/gruvbox-wallpapers](https://github.com/AngelJumbo/gruvbox-wallpapers),
+downloaded at install time. Colors by [Catppuccin](https://catppuccin.com),
+[Tokyo Night](https://github.com/folke/tokyonight.nvim) and
+[Gruvbox](https://github.com/morhetz/gruvbox).

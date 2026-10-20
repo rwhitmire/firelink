@@ -1,9 +1,20 @@
-# Wallpapers the palettes use, from github.com/orangci/walls-catppuccin-mocha.
-# That repo has no license, so Firelink doesn't redistribute them: install.sh
-# downloads them into wallpapers/ (gitignored), pinned to this commit and checked
-# by sha256. Without them, the background is the palette's base color.
-# commit 7bfdf10d16ad3a689f9f0cf3a0930da3d1a245a8
-cd562ac9672dde3c23f7cbf9f9a81be1eb7a4aee16f0fbdaae471921e118f95e  dark-forest.jpg
-d683e30c62321b0def8c6022e9be5793e696dfb99042aa5ac4b7e853a6750625  horizon.jpg
-443b6e220244de01337731e1fe95d98b52dc345812c3559f4c7dc02deebfa652  pink-clouds.jpg
-594a126cb54284ecc7e78d369bb8f879615cc03ba3b6674d48cef86bf236fdf3  serenity.jpg
+# The palettes' wallpapers, one per line: sha256, the file name in wallpapers/,
+# and where install.sh downloads it from (pinned to a commit). Not all of the
+# source repos have a license, so Firelink doesn't redistribute them; they're
+# downloaded into wallpapers/ (gitignored) and checked by sha256. Without one,
+# the background is the palette's base color.
+
+# Catppuccin: github.com/zhichaoh/catppuccin-wallpapers (MIT)
+8c0b9e5accb66bdb6bde182e624b4087b77d11c4817853a30e7e016520cfa894  clear-day.jpg  https://raw.githubusercontent.com/zhichaoh/catppuccin-wallpapers/1023077979591cdeca76aae94e0359da1707a60e/landscapes/Clearday.jpg
+8c3a838f9e9ef4a23fc601087044a4a67a49501a3acc9880ab50240d0c1c1d03  forest-peak.png  https://raw.githubusercontent.com/zhichaoh/catppuccin-wallpapers/1023077979591cdeca76aae94e0359da1707a60e/landscapes/forrest.png
+1199a43751f1234d3fb92ecf614fbf34de2c07334d3fdd355891044f51bddada  shaded-landscape.png  https://raw.githubusercontent.com/zhichaoh/catppuccin-wallpapers/1023077979591cdeca76aae94e0359da1707a60e/landscapes/shaded_landscape.png
+8c1bfd88a05541b81dd5c9affae6e22501fbab27512594d2866c331222497030  clouds-night.jpg  https://raw.githubusercontent.com/zhichaoh/catppuccin-wallpapers/1023077979591cdeca76aae94e0359da1707a60e/landscapes/Cloudsnight.jpg
+
+# Tokyo Night: Omarchy's, from github.com/omacom/omarchy (MIT; its default before it moved to WebP)
+c0ae83cb28a2ac34a9b68831c85affbf534a043170a7ec4f56bc9c9db5ccdf06  winding-road.jpg  https://raw.githubusercontent.com/omacom/omarchy/ec779715bda6699cd848b3a859f580d8928c3ae6/themes/tokyo-night/backgrounds/0-winding-road.jpg
+
+# Gruvbox Dark: Omarchy's, from github.com/omacom/omarchy (MIT)
+cdbd3cd7b34a2c8e7e74818af5101a8531786878b0a3afcb8f6985b27394f66d  ferns.jpg  https://raw.githubusercontent.com/omacom/omarchy/ec779715bda6699cd848b3a859f580d8928c3ae6/themes/gruvbox/backgrounds/5-leaves.jpg
+
+# Gruvbox Light: github.com/AngelJumbo/gruvbox-wallpapers (no license; a public-domain painting, recolored)
+a5375be4f7e88e7401ff71ab3bf741bd10d234b0892326ccd585799f4d07cec0  chinese-hills.jpg  https://raw.githubusercontent.com/AngelJumbo/gruvbox-wallpapers/293774acaa531ce106332f790c80301998066b25/wallpapers/minimalistic/light/chinese-hills.jpg

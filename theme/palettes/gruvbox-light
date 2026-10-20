@@ -1,0 +1,40 @@
+# Gruvbox Light (medium contrast) — from morhetz/gruvbox's palette, on Catppuccin's
+# slot names (so the templates work unchanged). Accents are gruvbox's faded set,
+# which stays readable on the light background. Hex values without '#'.
+rosewater=3c3836
+flamingo=b16286
+pink=8f3f71
+mauve=8f3f71
+red=9d0006
+maroon=cc241d
+peach=af3a03
+yellow=b57614
+green=79740e
+teal=427b58
+sky=076678
+sapphire=458588
+blue=076678
+lavender=076678
+text=3c3836
+subtext1=504945
+subtext0=665c54
+overlay2=7c6f64
+overlay1=928374
+overlay0=a89984
+surface2=bdae93
+surface1=d5c4a1
+surface0=ebdbb2
+base=fbf1c7
+mantle=f2e5bc
+crust=ebdbb2
+
+# Non-color settings
+name=Gruvbox Light
+color_scheme=prefer-light
+wallpaper=chinese-hills.jpg
+
+# Terminal black/white slots, from gruvbox's terminal colors
+ansi_black=fbf1c7
+ansi_white=7c6f64
+ansi_bright_black=928374
+ansi_bright_white=3c3836

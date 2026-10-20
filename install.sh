@@ -21,8 +21,6 @@ satty_version=0.22.0
 satty_url=https://github.com/Satty-org/Satty/releases/download/v$satty_version/satty-x86_64-unknown-linux-gnu.tar.gz
 satty_sha256=eb7a028c4a5ce331c2f355add8e2b807a7d697fe4495f7e1965786a4f6bcd5b8
 
-wallpaper_base=https://raw.githubusercontent.com/orangci/walls-catppuccin-mocha
-
 step() { printf '\n\033[1;33m==> %s\033[0m\n' "$*"; }
 note() { printf '    %s\n' "$*"; }
 
@@ -143,14 +141,13 @@ else
 fi
 
 step "Wallpapers"
-commit=$(sed -nE 's/^# commit ([0-9a-f]+)$/\1/p' "$home/theme/wallpapers.txt")
 mkdir -p "$home/wallpapers"
-while read -r sha file; do
+while read -r sha file url; do
     dest=$home/wallpapers/$file
     if [ -f "$dest" ] && echo "$sha  $dest" | sha256sum -c --quiet 2>/dev/null; then
         continue
     fi
-    if curl -fsSL -o "$dest.tmp" "$wallpaper_base/$commit/$file" &&
+    if curl -fsSL -o "$dest.tmp" "$url" &&
         echo "$sha  $dest.tmp" | sha256sum -c --quiet; then
         mv "$dest.tmp" "$dest"
         note "downloaded $file"
@@ -202,7 +199,7 @@ note "enabled: ${units[*]} waybar.service mako.service"
 step "Theme"
 mkdir -p "$state"
 "$home/bin/theme-set"
-note "Catppuccin $(cat "$state/flavor") (switch with Mod+Ctrl+Shift+T or firelink theme <flavor>)"
+note "$(sed -nE 's/^name=//p' "$home/theme/palettes/$(cat "$state/flavor")") (switch with Mod+Ctrl+Shift+T or firelink theme <flavor>)"
 
 # The commit this run installed, so `firelink update` can skip the installer when
 # nothing new was pulled (only after a successful run, so a failed one is retried)

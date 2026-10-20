@@ -15,11 +15,11 @@
     document.documentElement.classList.add('js');
     try {
       var f = localStorage.getItem('flavor');
-      if (/^(latte|frappe|macchiato|mocha)$/.test(f)) document.documentElement.dataset.flavor = f;
+      if (/^(latte|frappe|macchiato|mocha|tokyonight|gruvbox-(light|dark))$/.test(f)) document.documentElement.dataset.flavor = f;
     } catch (e) {}
   </script>
   <style>
-    /* The four Catppuccin flavors, the same values as theme/palettes/ */
+    /* The themes, the same values as theme/palettes/ */
     :root, [data-flavor="mocha"] {
       --rosewater: #f5e0dc; --red: #f38ba8; --peach: #fab387; --yellow: #f9e2af;
       --green: #a6e3a1; --teal: #94e2d5; --blue: #89b4fa; --mauve: #cba6f7; --lavender: #b4befe;
@@ -49,6 +49,28 @@
       --surface2: #acb0be; --surface1: #bcc0cc; --surface0: #ccd0da;
       --base: #eff1f5; --mantle: #e6e9ef; --crust: #dce0e8;
       color-scheme: light;
+    }
+    [data-flavor="tokyonight"] {
+      --rosewater: #c0caf5; --red: #f7768e; --peach: #ff9e64; --yellow: #e0af68;
+      --green: #9ece6a; --teal: #449dab; --blue: #7aa2f7; --mauve: #bb9af7; --lavender: #7aa2f7;
+      --text: #a9b1d6; --subtext1: #9aa5ce; --subtext0: #787c99; --overlay2: #737aa2; --overlay0: #545c7e;
+      --surface2: #414868; --surface1: #3b4261; --surface0: #292e42;
+      --base: #1a1b26; --mantle: #13141c; --crust: #0e0e14;
+    }
+    [data-flavor="gruvbox-light"] {
+      --rosewater: #3c3836; --red: #9d0006; --peach: #af3a03; --yellow: #b57614;
+      --green: #79740e; --teal: #427b58; --blue: #076678; --mauve: #8f3f71; --lavender: #076678;
+      --text: #3c3836; --subtext1: #504945; --subtext0: #665c54; --overlay2: #7c6f64; --overlay0: #a89984;
+      --surface2: #bdae93; --surface1: #d5c4a1; --surface0: #ebdbb2;
+      --base: #fbf1c7; --mantle: #f2e5bc; --crust: #ebdbb2;
+      color-scheme: light;
+    }
+    [data-flavor="gruvbox-dark"] {
+      --rosewater: #ebdbb2; --red: #fb4934; --peach: #fe8019; --yellow: #fabd2f;
+      --green: #b8bb26; --teal: #8ec07c; --blue: #83a598; --mauve: #d3869b; --lavender: #83a598;
+      --text: #ebdbb2; --subtext1: #d5c4a1; --subtext0: #bdae93; --overlay2: #a89984; --overlay0: #7c6f64;
+      --surface2: #665c54; --surface1: #504945; --surface0: #3c3836;
+      --base: #282828; --mantle: #1d2021; --crust: #1d2021;
     }
     :root {
       --serif: "Source Serif 4", Georgia, serif;
@@ -771,7 +793,7 @@
 
       <section id="themes" data-title="Themes">
         <h2>Themes</h2>
-        <p>Everything follows one of Catppuccin's four flavors: window borders, the bar, menus, notifications, the lock screen, the terminal and the wallpaper. Switch with <kbd>Super</kbd><kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>T</kbd> or <code>firelink theme <span id="theme-cmd">latte</span></code>. Or pick one here; this page follows along.</p>
+        <p>Everything follows the theme you pick: window borders, the bar, menus, notifications, the lock screen, the terminal and the wallpaper. There are seven: Catppuccin's four flavors, Tokyo Night and Gruvbox in light and dark. Switch with <kbd>Super</kbd><kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>T</kbd> or <code>firelink theme <span id="theme-cmd">latte</span></code>. Or pick one here; this page follows along.</p>
         <div class="flavors">
           <button type="button" class="flavor" data-flavor="latte" aria-pressed="false">
             <span class="bg" style="background:#eff1f5;color:#4c4f69">Latte</span>
@@ -788,6 +810,18 @@
           <button type="button" class="flavor" data-flavor="mocha" aria-pressed="true">
             <span class="bg" style="background:#1e1e2e;color:#cdd6f4">Mocha</span>
             <span class="strip2"><i style="background:#89b4fa"></i><i style="background:#cba6f7"></i><i style="background:#a6e3a1"></i><i style="background:#f9e2af"></i><i style="background:#fab387"></i><i style="background:#f38ba8"></i></span>
+          </button>
+          <button type="button" class="flavor" data-flavor="tokyonight" aria-pressed="false">
+            <span class="bg" style="background:#1a1b26;color:#a9b1d6">Tokyo Night</span>
+            <span class="strip2"><i style="background:#7aa2f7"></i><i style="background:#bb9af7"></i><i style="background:#9ece6a"></i><i style="background:#e0af68"></i><i style="background:#ff9e64"></i><i style="background:#f7768e"></i></span>
+          </button>
+          <button type="button" class="flavor" data-flavor="gruvbox-light" aria-pressed="false">
+            <span class="bg" style="background:#fbf1c7;color:#3c3836">Gruvbox Light</span>
+            <span class="strip2"><i style="background:#076678"></i><i style="background:#8f3f71"></i><i style="background:#79740e"></i><i style="background:#b57614"></i><i style="background:#af3a03"></i><i style="background:#9d0006"></i></span>
+          </button>
+          <button type="button" class="flavor" data-flavor="gruvbox-dark" aria-pressed="false">
+            <span class="bg" style="background:#282828;color:#ebdbb2">Gruvbox Dark</span>
+            <span class="strip2"><i style="background:#83a598"></i><i style="background:#d3869b"></i><i style="background:#b8bb26"></i><i style="background:#fabd2f"></i><i style="background:#fe8019"></i><i style="background:#fb4934"></i></span>
           </button>
         </div>
       </section>
@@ -816,7 +850,7 @@
         <p>Positions are in scaled pixels: the panel is 1920 wide at scale 1.25, so 1536, and the monitor starts there. Other options include <code>transform "90"</code> to rotate a screen and <code>off</code>. To try a setting before saving it, run <code>niri msg output eDP-1 scale 1.5</code>; it lasts until the config is loaded again.</p>
 
         <h3 id="wallpaper">Wallpaper</h3>
-        <p>Each flavor comes with its own wallpaper. To use yours instead, copy it to <code>~/.config/firelink/wallpaper</code>. It stays when you switch flavors or update.</p>
+        <p>Each theme comes with its own wallpaper. To use yours instead, copy it to <code>~/.config/firelink/wallpaper</code>. It stays when you switch flavors or update.</p>
         <pre class="config">mkdir -p ~/.config/firelink
 cp ~/Pictures/mine.jpg ~/.config/firelink/wallpaper
 systemctl --user restart firelink-swaybg</pre>
@@ -833,7 +867,7 @@ xdg-settings set default-web-browser brave-browser.desktop</pre>
   <footer>
     <div class="wrap">
       <p>Made by <a href="https://estuslabs.com">Estus Labs</a> · MIT license · <a href="https://github.com/rwhitmire/firelink">Source</a></p>
-      <p>Wallpapers by <a href="https://github.com/orangci/walls-catppuccin-mocha">orangc</a></p>
+      <p>Wallpapers from <a href="https://github.com/zhichaoh/catppuccin-wallpapers">zhichaoh</a>, <a href="https://github.com/omacom/omarchy">Omarchy</a> and <a href="https://github.com/AngelJumbo/gruvbox-wallpapers">AngelJumbo</a></p>
     </div>
   </footer>
 
@@ -841,8 +875,12 @@ xdg-settings set default-web-browser brave-browser.desktop</pre>
   (function () {
     var root = document.documentElement;
     var CMD = 'curl -fsSL https://firelink.estuslabs.com/install | bash';
-    var FLAVORS = ['latte', 'frappe', 'macchiato', 'mocha'];
-    var NAMES = { latte: 'Latte', frappe: 'Frappé', macchiato: 'Macchiato', mocha: 'Mocha' };
+    var FLAVORS = ['latte', 'frappe', 'macchiato', 'mocha', 'tokyonight', 'gruvbox-light', 'gruvbox-dark'];
+    var NAMES = {
+      latte: 'Latte', frappe: 'Frappé', macchiato: 'Macchiato', mocha: 'Mocha',
+      tokyonight: 'Tokyo Night',
+      'gruvbox-light': 'Gruvbox Light', 'gruvbox-dark': 'Gruvbox Dark'
+    };
     var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
     function $(s, el) { return (el || document).querySelector(s); }
     function $$(s, el) { return Array.prototype.slice.call((el || document).querySelectorAll(s)); }
