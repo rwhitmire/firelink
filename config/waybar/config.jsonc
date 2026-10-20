@@ -32,13 +32,24 @@
     "clock": {
         "format": "{:%a %b %d  %I:%M %p}",
         "tooltip-format": "<tt>{calendar}</tt>",
+        // No colors here: pango spans can't follow the theme, so the
+        // tooltip's own text color is used throughout.
         "calendar": {
             "mode": "month",
+            "mode-mon-col": 3,
+            "on-scroll": 1,
             "format": {
-                "months": "<span color='#cba6f7'><b>{}</b></span>",
-                "weekdays": "<span color='#f9e2af'><b>{}</b></span>",
-                "today": "<span color='#89b4fa'><b><u>{}</u></b></span>"
+                "months": "<b>{}</b>",
+                "weekdays": "<b>{}</b>",
+                "today": "<b><u>{}</u></b>"
             }
+        },
+        // Click for the year, scroll through months, right-click to go back
+        "actions": {
+            "on-click": "mode",
+            "on-click-right": "shift_reset",
+            "on-scroll-up": "shift_up",
+            "on-scroll-down": "shift_down"
         }
     },
 

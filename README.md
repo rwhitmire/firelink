@@ -58,6 +58,8 @@ skips what's already done.
   asked in fuzzel; hidden and enterprise networks and VPNs open
   nm-connection-editor), or the Bluetooth icon to connect and pair devices
   (pairing codes are shown or asked for in fuzzel)
+- Hover the clock for a calendar: click it for the whole year, scroll to
+  change month, right-click to come back to today
 - **Mod+N** dismisses the latest notification, **Mod+Shift+N** all of them, and
   **Mod+Ctrl+N** toggles do not disturb (only critical notifications show until
   it's off; click the bell in the bar to turn it off)
