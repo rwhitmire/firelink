@@ -1,8 +1,10 @@
 #!/bin/bash
 # Toggle a screen recording, saved to ~/Videos/Recordings.
-# Usage: screenrecord [region|output]
+# Usage: screenrecord [region|output] [audio]
 #   region  select an area with slurp (default)
 #   output  record the focused monitor
+#   audio   also record desktop audio (off by default: most recordings are
+#           quick snippets, and opening the audio stream pops at the start)
 # Running it again while a recording is active stops it.
 #
 # Records with gpu-screen-recorder (Flatpak, hardware encoding). If it isn't
@@ -29,6 +31,11 @@ if pkill -INT -f "^(.*/)?gpu-screen-recorder( |$)" || pkill -INT -x wf-recorder;
 fi
 
 mode=${1:-region}
+gsr_audio=() wf_audio=()
+if [ "${2:-}" = audio ]; then
+  gsr_audio=(-a default_output)
+  wf_audio=(--audio)
+fi
 mkdir -p "$dir"
 file="$dir/Recording from $(date '+%Y-%m-%d %H-%M-%S').mp4"
 
@@ -45,7 +52,7 @@ case "$mode" in
     wf_target=(-o "$output")
     ;;
   *)
-    echo "usage: screenrecord [region|output]" >&2
+    echo "usage: screenrecord [region|output] [audio]" >&2
     exit 1
     ;;
 esac
@@ -55,7 +62,7 @@ bar
 
 if flatpak info "$gsr_app" &>/dev/null; then
   flatpak run --command=gpu-screen-recorder "$gsr_app" \
-    "${gsr_target[@]}" -f 60 -a default_output -o "$file" &
+    "${gsr_target[@]}" -f 60 "${gsr_audio[@]}" -o "$file" &
   pid=$!
   sleep 1.5
   if kill -0 "$pid" 2>/dev/null; then
@@ -67,7 +74,7 @@ fi
 
 if command -v wf-recorder &>/dev/null; then
   notify "Recording started" "Run again to stop (wf-recorder)"
-  wf-recorder "${wf_target[@]}" --audio -f "$file" || true
+  wf-recorder "${wf_target[@]}" "${wf_audio[@]}" -f "$file" || true
   exit 0
 fi
 
